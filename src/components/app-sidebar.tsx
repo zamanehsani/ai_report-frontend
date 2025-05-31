@@ -17,7 +17,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 
-import { NavDocuments } from "./nav-documents";
+// import { NavDocuments } from "./nav-documents";
 import { NavMain } from "./nav-main";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
@@ -33,34 +33,35 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Admin",
+    email: "info@admin.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "./",
       icon: IconDashboard,
     },
+
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "Analytics",
-      url: "#",
+      title: "Sites",
+      url: "./sites",
       icon: IconChartBar,
     },
     {
-      title: "Projects",
-      url: "#",
+      title: "Reports",
+      url: "./reports",
       icon: IconFolder,
     },
     {
-      title: "Team",
-      url: "#",
+      title: "Clients",
+      url: "./clients",
+      icon: IconUsers,
+    },
+    {
+      title: "Personnels",
+      url: "./personnels",
       icon: IconUsers,
     },
   ],
@@ -157,7 +158,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">coderHQ.co</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -165,7 +166,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        {/* <NavDocuments items={data.documents} /> */}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
