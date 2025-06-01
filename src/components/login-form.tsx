@@ -5,14 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import { useStore } from "@/store/use-bears";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const authenticate = useStore((state) => state.authenticate);
+
   const handlLogin = (event: any) => {
     event.preventDefault();
+    authenticate(true);
     navigate("/dashboard");
   };
   return (

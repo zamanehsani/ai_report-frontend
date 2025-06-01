@@ -22,7 +22,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useNavigate } from "react-router";
+
+import { useStore } from "@/store/use-bears";
 
 export function NavUser({
   user,
@@ -34,10 +35,10 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-  const navigate = useNavigate();
+  const authenticate = useStore((state) => state.authenticate);
 
   const LogOut = () => {
-    navigate("/");
+    authenticate(false);
   };
   return (
     <SidebarMenu>
