@@ -5,31 +5,52 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { useStore } from "@/store/use-bears";
+import { useStore } from "@/store/use-store";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const authenticate = useStore((state) => state.authenticate);
+  const setToken = useStore((state) => state.setToken);
+  const setUser = useStore((state) => state.setUser);
 
-  const handlLogin = (event: any) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    authenticate(true);
-    navigate("/dashboard");
+    setError("");
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}api/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setToken(data.token);
+        setUser(data.user);
+        authenticate(true);
+        navigate("/dashboard");
+      } else {
+        setError("Login failed. Please check your email and password.");
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again later.");
+    }
   };
+
   return (
     <div className={cn("flex flex-col gap-6 ", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>Login with your Apple or Google account</CardDescription>
+          <CardDescription>Login to your account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handlLogin}>
+          <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
-              <div className="flex flex-col gap-4">
+              {/* <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
@@ -53,7 +74,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 <span className="bg-card text-muted-foreground relative z-10 px-2">
                   Or continue with
                 </span>
-              </div>
+              </div> */}
               <div className="grid gap-6">
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
@@ -79,6 +100,9 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                     required
                   />
                 </div>
+                {error && (
+                  <div className="text-red-500 text-sm text-center font-medium mb-2">{error}</div>
+                )}
                 <Button type="submit" className="w-full">
                   Login
                 </Button>
@@ -94,8 +118,15 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         </CardContent>
       </Card>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a> and{" "}
-        <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our{" "}
+        <a target="_blank" href="https://protectioncorps.com/terms-and-conditions">
+          Terms of Service
+        </a>{" "}
+        and{" "}
+        <a target="_blank" href="https://protectioncorps.com/privacy-policy/">
+          Privacy Policy
+        </a>
+        .
       </div>
     </div>
   );

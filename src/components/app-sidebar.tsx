@@ -149,7 +149,11 @@ const data = {
   ],
 };
 
+import { useStore } from "@/store/use-store";
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = useStore((state) => state.user);
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -158,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">coderHQ.co</span>
+                <span className="text-base font-semibold">ProtectionCorps.com</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -170,7 +174,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );

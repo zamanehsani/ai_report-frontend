@@ -1,7 +1,7 @@
 import { ChartAreaInteractive } from "./chart-area-interactive";
 import { SectionCards } from "./section-cards";
-import { useStore } from "@/store/use-bears";
-import { type userType } from "../store/use-bears";
+import { useStore } from "@/store/use-store";
+import { type userType } from "../store/use-store";
 
 export default function Analytic() {
   const user = useStore<userType>((state) => state.user);

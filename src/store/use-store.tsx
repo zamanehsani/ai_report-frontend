@@ -18,22 +18,23 @@ export interface AuthState {
   logout: () => void;
   removeUser: () => void;
   setUser: (newUser: userType) => void;
+  setToken: (token: string) => void;
+  removeToken: () => void;
 }
 
 export const useStore = create<AuthState>()(
   devtools(
     persist(
       (set) => ({
-        user: {
-          firstName: "Zaman",
-          lastName: "Ehsani",
-        },
+        user: {},
         token: "",
         isAuthenticated: false,
         authenticate: (auth) => set({ isAuthenticated: auth }),
         logout: () => set({ isAuthenticated: false }),
         removeUser: () => set({ user: {} }),
         setUser: (newUser) => set({ user: newUser }),
+        setToken: (newToken) => set({ token: newToken }),
+        removeToken: () => set({ token: "" }),
       }),
       { name: "AuthStore" }
     )

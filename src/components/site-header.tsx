@@ -12,11 +12,11 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-2">
           <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
             <a
-              href="https://coderhq.co"
+              href="https://protectioncorps.com"
               rel="noopener noreferrer"
               target="_blank"
               className="dark:text-foreground">
-              coderhq.co
+              Protection Corps Security Services
             </a>
           </Button>
         </div>
