@@ -27,11 +27,9 @@ import { useStore, type userType } from "@/store/use-store";
 
 export function NavUser({ user }: { user: userType }) {
   const { isMobile } = useSidebar();
-  const authenticate = useStore((state) => state.authenticate);
+  const authenticate = useStore((state: any) => state.authenticate);
   const avatar = "/avatars/shadcn.jpg";
-  const LogOut = () => {
-    authenticate(false);
-  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -42,7 +40,10 @@ export function NavUser({ user }: { user: userType }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage src={avatar} alt={user.lastName} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user.firstName?.charAt(0).toUpperCase()}
+                  {user.lastName?.charAt(0).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">
@@ -50,7 +51,7 @@ export function NavUser({ user }: { user: userType }) {
                 </span>
                 <span className="text-muted-foreground truncate text-xs">{user.email}</span>
               </div>
-              <IconDotsVertical className="ml-auto size-4" />
+              {/* <IconDotsVertical className="ml-auto size-4" /> */}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -62,7 +63,10 @@ export function NavUser({ user }: { user: userType }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={avatar} alt={user.lastName} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {user.firstName?.charAt(0).toUpperCase()}
+                    {user.lastName?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
@@ -72,7 +76,7 @@ export function NavUser({ user }: { user: userType }) {
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <IconUserCircle />
@@ -87,8 +91,8 @@ export function NavUser({ user }: { user: userType }) {
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={LogOut}>
+            <DropdownMenuSeparator /> */}
+            <DropdownMenuItem onClick={() => authenticate(false)}>
               <IconLogout />
               Log out
             </DropdownMenuItem>

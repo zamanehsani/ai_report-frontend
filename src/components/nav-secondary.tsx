@@ -1,5 +1,5 @@
 import * as React from "react";
-import { type Icon } from "@tabler/icons-react";
+import { IconLogout, type Icon } from "@tabler/icons-react";
 
 import {
   SidebarGroup,
@@ -8,6 +8,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+
+import { useStore } from "@/store/use-store";
 
 export function NavSecondary({
   items,
@@ -19,11 +21,22 @@ export function NavSecondary({
     icon: Icon;
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+  const authenticate = useStore((state: any) => state.authenticate);
+
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => (
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild onClick={() => authenticate(false)}>
+              <a href="#">
+                <IconLogout />
+                <span className="">Logout</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          {/* {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
                 <a href={item.url}>
@@ -32,7 +45,7 @@ export function NavSecondary({
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
-          ))}
+          ))} */}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
