@@ -6,33 +6,73 @@ import { listSites, removeSite, editSite } from "@/lib/utils";
 import SiteItemCard from "@/components/site/site_item_card";
 import NewSite from "@/components/site/new_site";
 import { toast } from "sonner";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default function Sites() {
   const setSites = siteStore((state) => state.setSites);
-  const addSite = siteStore((state) => state.addSite);
   const updateSite = siteStore((state) => state.updateSite);
   const deleteSite = siteStore((state) => state.deleteSite);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1); // Add totalPages state
+
   const token = useStore((state) => state.token);
   const sites = siteStore((state) => state.sites);
-  const [loading, setLoading] = useState(false);
+
   const base_url = import.meta.env.VITE_BASE_URL || "/";
 
   useEffect(() => {
     setLoading(true);
 
-    listSites(`${base_url}api/site/`)
+    listSites(`${base_url}api/site/?page=${page}&pageSize=${pageSize}`)
       .then((res: any) => {
-        console.log("list of sites: ", res.data.sites);
+        // Assuming API returns total count of sites
         setSites(res.data.sites);
+        setTotalPages(Math.ceil(res.data.total / pageSize) || 1); // Set total pages from API
         setLoading(false);
       })
       .catch((err) => {
         setError("Failed to fetch sites.");
         setLoading(false);
       });
-    console.log("got it: ", sites);
-  }, []);
+  }, [page, pageSize]); // Add page and pageSize as dependencies
+
+  // Helper to generate page numbers with ellipsis
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxShown = 5; // How many page numbers to show around current
+    let start = Math.max(1, page - 2);
+    let end = Math.min(totalPages, page + 2);
+
+    if (page <= 3) {
+      end = Math.min(totalPages, maxShown);
+    }
+
+    if (page >= totalPages - 2) {
+      start = Math.max(1, totalPages - maxShown + 1);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages || newPage === page) return;
+    setPage(newPage);
+  };
 
   // Handler for removing a site
   const handleRemoveSite = (id: string) => {
@@ -86,12 +126,12 @@ export default function Sites() {
   };
 
   return (
-    <div className="flex flex-col px-3">
-      <div className="flex justify-end ">
+    <div className="flex flex-col px-3 h-full">
+      <div className="flex justify-end sticky top-0 z-10 bg-white dark:bg-background py-2">
         <NewSite />
       </div>
-      <Separator className="my-4" />
-      <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+
+      <div className=" *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 overflow-y-auto max-h-[80vh] py-3">
         {loading ? (
           <div className="col-span-full flex justify-center items-center py-10">
             <span className="text-muted-foreground">Loading sites...</span>
@@ -106,6 +146,67 @@ export default function Sites() {
             />
           ))
         )}
+      </div>
+      <div className="flex justify-center py-2  mt-auto">
+        {/* Dynamic Pagination */}
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={() => handlePageChange(page - 1)}
+                aria-disabled={page === 1}
+                className={page === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            {getPageNumbers()[0] > 1 && (
+              <>
+                <PaginationItem>
+                  <PaginationLink href="#" onClick={() => handlePageChange(1)}>
+                    1
+                  </PaginationLink>
+                </PaginationItem>
+                {getPageNumbers()[0] > 2 && (
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                )}
+              </>
+            )}
+            {getPageNumbers().map((num) => (
+              <PaginationItem key={num}>
+                <PaginationLink
+                  href="#"
+                  onClick={() => handlePageChange(num)}
+                  isActive={num === page}>
+                  {num}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
+              <>
+                {getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1 && (
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                )}
+                <PaginationItem>
+                  <PaginationLink href="#" onClick={() => handlePageChange(totalPages)}>
+                    {totalPages}
+                  </PaginationLink>
+                </PaginationItem>
+              </>
+            )}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={() => handlePageChange(page + 1)}
+                aria-disabled={page === totalPages}
+                className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );
