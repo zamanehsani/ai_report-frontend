@@ -57,6 +57,7 @@ export default function NewSite() {
         setOpen(false);
       })
       .catch((err) => {
+        // add toast here as well.
         console.log("error happen: ", err);
       });
   };

@@ -2,9 +2,10 @@ import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
 import { useStore } from "@/store/use-store";
 import { siteStore, type siteType } from "@/store/site-store";
-import { listSites } from "@/lib/utils";
+import { listSites, removeSite, editSite } from "@/lib/utils";
 import SiteItemCard from "@/components/site/site_item_card";
 import NewSite from "@/components/site/new_site";
+import { toast } from "sonner";
 
 export default function Sites() {
   const setSites = siteStore((state) => state.setSites);
@@ -35,19 +36,53 @@ export default function Sites() {
 
   // Handler for removing a site
   const handleRemoveSite = (id: string) => {
-    // TODO: Optionally call backend to delete
-    deleteSite(id);
+    const url = `${base_url}api/site/${id}`;
+    removeSite(token, url)
+      .then((res) => {
+        deleteSite(id);
+        toast("Site Removed", {
+          description: res.data?.message,
+          action: {
+            label: "X",
+            onClick: () => console.log("toast closed."),
+          },
+        });
+      })
+      .catch(() => {
+        toast("Error!", {
+          description: "Could not remove this site. Please try again.",
+          action: {
+            label: "X",
+            onClick: () => console.log("toast closed."),
+          },
+        });
+      });
   };
 
   // Handler for editing a site (for now, just a placeholder)
   const handleEditSite = (site: siteType) => {
-    // TODO: Show edit dialog, call backend, then update store
-    // Example: updateSite({...site, name: 'New Name'})
-    // For now, just prompt for a new name
-    const newName = window.prompt("Edit site name", site.name);
-    if (newName && newName !== site.name) {
-      updateSite({ ...site, name: newName });
-    }
+    // send to the backend and on ok, update the list here as well.
+    const url = `${base_url}api/site/${site.id}`;
+    editSite({ data: site, url, token })
+      .then((res) => {
+        updateSite(res.site);
+        toast("Site Update", {
+          description: res?.message,
+          action: {
+            label: "X",
+            onClick: () => console.log("toast closed."),
+          },
+        });
+      })
+      .catch(() => {
+        toast("Error!", {
+          description: "Could not update this site.",
+          action: {
+            label: "X",
+            onClick: () => console.log("toast closed."),
+          },
+        });
+      });
   };
 
   return (
