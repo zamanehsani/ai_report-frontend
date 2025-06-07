@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Plus, X } from "lucide-react";
+import { Edit, X } from "lucide-react";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -22,17 +22,18 @@ import { Command as CommandPrimitive } from "cmdk";
 import { useCallback, useMemo } from "react";
 import { type clientType, clientStore } from "@/store/client-store";
 import { type siteType, siteStore } from "@/store/site-store";
-import { CreateClient } from "@/lib/client_utils";
+import { editClient } from "@/lib/client_utils";
 import { useStore } from "@/store/use-store";
 import { toast } from "sonner";
 
-export default function NewClient() {
-  const [officialName, setOfficialName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [contactPerson, setContactPerson] = useState<{ name: string }>({ name: "" });
-  const [address, setAddress] = useState("");
-  const [password, setPassword] = useState("");
+export default function EditClient({ client }: { client: clientType }) {
+  const [officialName, setOfficialName] = useState(client.officialName);
+  const [email, setEmail] = useState(client.email);
+  const [phone, setPhone] = useState(client.phone);
+  const [contactPerson, setContactPerson] = useState<{ name: string }>({
+    name: client.contactPerson?.name,
+  });
+  const [address, setAddress] = useState(client.address);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -40,9 +41,10 @@ export default function NewClient() {
   const sites = siteStore((state) => state.sites);
   const [selectedSites, setSelectedSites] = useState<siteType[]>([]);
   const [inputValue, setInputValue] = useState("");
+
   const base_url = import.meta.env.VITE_BASE_URL || "/";
   const token = useStore((state) => state.token);
-  const addClient = clientStore((state) => state.addClient);
+  const updateClient = clientStore((state) => state.updateClient);
 
   const handleUnselect = useCallback((site: siteType) => {
     setSelectedSites((prev) => prev.filter((s) => s.id !== site.id));
@@ -62,25 +64,23 @@ export default function NewClient() {
     [selectedSites]
   );
 
-  const handleSubmit = (e: any) => {
+  // Handler for editing a site (for now, just a placeholder)
+  const handleEditClient = (e: any) => {
     e.preventDefault();
+    const url = `${base_url}api/client/${client.id}`;
     const data = {
       officialName,
       email,
       phone,
       contactPerson,
       address,
-      password,
-      site: selectedSites.map((site) => site.id),
     };
 
-    const url = `${base_url}api/client/register/`;
-    CreateClient({ data, url, token })
+    editClient({ data: { ...data, password: "" }, url, token })
       .then((res) => {
-        addClient(res.user);
-
-        toast("Client Registered", {
-          description: `${res.user?.officialName} has been created successfully.`,
+        updateClient(res.user);
+        toast("Client Update", {
+          description: res?.message,
           action: {
             label: "X",
             onClick: () => console.log("toast closed."),
@@ -88,10 +88,9 @@ export default function NewClient() {
         });
         setOpenDialog(false);
       })
-      .catch((error) => {
-        console.log("error happen: ", error);
+      .catch(() => {
         toast("Error!", {
-          description: `${error}`,
+          description: "Could not update this client.",
           action: {
             label: "X",
             onClick: () => console.log("toast closed."),
@@ -104,15 +103,14 @@ export default function NewClient() {
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
         <Button variant="ghost">
-          <Plus />
-          Add A New Client
+          <Edit />
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => handleEditClient(e)}>
           <DialogHeader>
-            <DialogTitle>Create New Client</DialogTitle>
-            <DialogDescription>Please enter the data nice and clean.</DialogDescription>
+            <DialogTitle>Update Client</DialogTitle>
+            <DialogDescription>Please enter any changes here and hit Save.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-6 py-4">
             <div className="grid gap-4">
@@ -123,7 +121,7 @@ export default function NewClient() {
                   onChange={(e: any) => setOfficialName(e.target.value)}
                   type="text"
                   placeholder="ABC LLC CO"
-                  required
+                  defaultValue={officialName}
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -132,11 +130,11 @@ export default function NewClient() {
                     Email
                   </Label>
                   <Input
+                    defaultValue={email}
                     id="email"
                     onChange={(e: any) => setEmail(e.target.value)}
                     type="email"
                     placeholder="info@abc.com"
-                    required
                   />
                 </div>
                 <div>
@@ -145,10 +143,10 @@ export default function NewClient() {
                   </Label>
                   <Input
                     id="phone"
+                    defaultValue={phone}
                     onChange={(e: any) => setPhone(e.target.value)}
                     type="text"
                     placeholder="+1(800)222-2222"
-                    required
                   />
                 </div>
               </div>
@@ -227,11 +225,11 @@ export default function NewClient() {
                 </Label>
                 <div className=" grap-3">
                   <Input
+                    defaultValue={contactPerson?.name}
                     id="contactPerson"
                     onChange={(e: any) => setContactPerson({ name: e.target.value })}
                     type="text"
                     placeholder="John Due"
-                    required
                   />
                 </div>
               </div>
@@ -240,22 +238,11 @@ export default function NewClient() {
                   <Label htmlFor="address">Address</Label>
                 </div>
                 <Input
+                  defaultValue={address}
                   id="address"
                   placeholder="123st downtown NY"
                   onChange={(e: any) => setAddress(e.target.value)}
                   type="text"
-                  required
-                />
-              </div>
-              <div className="grid gap-1">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
-                <Input
-                  id="password"
-                  onChange={(e: any) => setPassword(e.target.value)}
-                  type="text"
-                  required
                 />
               </div>
 
@@ -270,7 +257,7 @@ export default function NewClient() {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit">Save </Button>
+            <Button type="submit">Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>

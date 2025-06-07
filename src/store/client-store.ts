@@ -9,6 +9,7 @@ export interface clientType {
   contactPerson: { name: string };
   address: string;
   password?: string;
+  site?: string[];
 }
 
 export interface ClientStore {
@@ -20,7 +21,7 @@ export interface ClientStore {
   deleteClient: (id: string) => void;
 }
 
-export const siteStore = create<ClientStore>()(
+export const clientStore = create<ClientStore>()(
   devtools(
     persist(
       (set, get) => ({

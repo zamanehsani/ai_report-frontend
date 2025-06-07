@@ -12,7 +12,7 @@ interface CreateClientProp {
     phone: string;
     address: string;
     password: string;
-    site: string[];
+    site?: string[];
   };
   url: string;
   token: string;
