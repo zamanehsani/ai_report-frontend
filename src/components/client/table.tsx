@@ -21,6 +21,7 @@ import { clientStore } from "@/store/client-store";
 import { listClient } from "@/lib/client_utils";
 import EditClient from "./edit_client";
 import RemoveClient from "./remove_client";
+import { Badge } from "@/components/ui/badge";
 
 export default function ClientTable() {
   const setClients = clientStore((state) => state.setClients);
@@ -37,7 +38,6 @@ export default function ClientTable() {
 
     listClient(`${base_url}api/client/?page=${page}&pageSize=${pageSize}`)
       .then((res: any) => {
-        console.log("res: ", res.data);
         setClients(res.data.clients);
         setTotalPages(Math.ceil(res.data.total / pageSize) || 1); // Set total pages from API
         setLoading(false);
@@ -92,6 +92,7 @@ export default function ClientTable() {
                 <TableHead>Phone</TableHead>
                 <TableHead> Manager Contact</TableHead>
                 <TableHead>Address</TableHead>
+                <TableHead>Sites</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -103,6 +104,18 @@ export default function ClientTable() {
                   <TableCell>{client.phone}</TableCell>
                   <TableCell>{client.contactPerson?.name}</TableCell>
                   <TableCell>{client.address}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap max-w-[12rem] gap-2">
+                      {client.sites?.map((site: any) => (
+                        <Badge
+                          className="p-1 px-2 hover:bg-muted"
+                          variant={"outline"}
+                          key={site.id}>
+                          {site.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <EditClient client={client} />
                     {client.id && <RemoveClient id={client.id} />}

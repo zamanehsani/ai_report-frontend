@@ -9,7 +9,7 @@ export interface clientType {
   contactPerson: { name: string };
   address: string;
   password?: string;
-  site?: string[];
+  sites?: string[];
 }
 
 export interface ClientStore {

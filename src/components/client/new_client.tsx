@@ -71,7 +71,7 @@ export default function NewClient() {
       contactPerson,
       address,
       password,
-      site: selectedSites.map((site) => site.id),
+      sites: selectedSites.map((site) => site.id),
     };
 
     const url = `${base_url}api/client/register/`;

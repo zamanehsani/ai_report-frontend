@@ -39,7 +39,7 @@ export default function EditClient({ client }: { client: clientType }) {
   const [openDialog, setOpenDialog] = useState(false);
 
   const sites = siteStore((state) => state.sites);
-  const [selectedSites, setSelectedSites] = useState<siteType[]>([]);
+  const [selectedSites, setSelectedSites] = useState<any>(client.sites || []);
   const [inputValue, setInputValue] = useState("");
 
   const base_url = import.meta.env.VITE_BASE_URL || "/";
@@ -47,13 +47,13 @@ export default function EditClient({ client }: { client: clientType }) {
   const updateClient = clientStore((state) => state.updateClient);
 
   const handleUnselect = useCallback((site: siteType) => {
-    setSelectedSites((prev) => prev.filter((s) => s.id !== site.id));
+    setSelectedSites((prev: any) => prev.filter((s: any) => s.id !== site.id));
   }, []);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Backspace" && selectedSites.length > 0) {
-        setSelectedSites((prev) => prev.slice(0, -1));
+        setSelectedSites((prev: any) => prev.slice(0, -1));
       }
     },
     [selectedSites]
@@ -74,6 +74,7 @@ export default function EditClient({ client }: { client: clientType }) {
       phone,
       contactPerson,
       address,
+      sites: selectedSites.map((site: any) => site.id),
     };
 
     editClient({ data: { ...data, password: "" }, url, token })
@@ -159,7 +160,7 @@ export default function EditClient({ client }: { client: clientType }) {
                   <Command className="overflow-visible" id="selectSite">
                     <div className="rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                       <div className="flex flex-wrap gap-2">
-                        {selectedSites.map((site) => {
+                        {selectedSites.map((site: any) => {
                           return (
                             <Badge
                               key={site.id}
@@ -204,7 +205,7 @@ export default function EditClient({ client }: { client: clientType }) {
                                     }}
                                     onSelect={() => {
                                       setInputValue("");
-                                      setSelectedSites((prev) => [...prev, site]);
+                                      setSelectedSites((prev: any) => [...prev, site]);
                                     }}
                                     className={"cursor-pointer"}>
                                     {site.name}

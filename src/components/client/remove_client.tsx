@@ -28,7 +28,7 @@ export default function RemoveClient({ id }: { id: string }) {
       .then((res) => {
         deleteClient(id);
         toast("Client Removed", {
-          description: res.data?.message,
+          description: <span className="text-slate-800">{res.data?.message}</span>,
           action: {
             label: "X",
             onClick: () => console.log("toast closed."),
@@ -66,7 +66,9 @@ export default function RemoveClient({ id }: { id: string }) {
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button onClick={() => handleRemoveClient(id)}>Save </Button>
+          <Button variant={"destructive"} onClick={() => handleRemoveClient(id)}>
+            Yes, Remove{" "}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
