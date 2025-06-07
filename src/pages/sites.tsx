@@ -23,7 +23,7 @@ export default function Sites() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(12);
   const [totalPages, setTotalPages] = useState(1); // Add totalPages state
 
   const token = useStore((state) => state.token);
@@ -153,6 +153,7 @@ export default function Sites() {
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
+                size="default"
                 href="#"
                 onClick={() => handlePageChange(page - 1)}
                 aria-disabled={page === 1}
@@ -162,7 +163,7 @@ export default function Sites() {
             {getPageNumbers()[0] > 1 && (
               <>
                 <PaginationItem>
-                  <PaginationLink href="#" onClick={() => handlePageChange(1)}>
+                  <PaginationLink size="default" href="#" onClick={() => handlePageChange(1)}>
                     1
                   </PaginationLink>
                 </PaginationItem>
@@ -176,6 +177,7 @@ export default function Sites() {
             {getPageNumbers().map((num) => (
               <PaginationItem key={num}>
                 <PaginationLink
+                  size="default"
                   href="#"
                   onClick={() => handlePageChange(num)}
                   isActive={num === page}>
@@ -191,7 +193,10 @@ export default function Sites() {
                   </PaginationItem>
                 )}
                 <PaginationItem>
-                  <PaginationLink href="#" onClick={() => handlePageChange(totalPages)}>
+                  <PaginationLink
+                    size="default"
+                    href="#"
+                    onClick={() => handlePageChange(totalPages)}>
                     {totalPages}
                   </PaginationLink>
                 </PaginationItem>
@@ -199,6 +204,7 @@ export default function Sites() {
             )}
             <PaginationItem>
               <PaginationNext
+                size="default"
                 href="#"
                 onClick={() => handlePageChange(page + 1)}
                 aria-disabled={page === totalPages}
