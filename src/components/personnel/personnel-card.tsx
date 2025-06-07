@@ -1,5 +1,6 @@
 import type { personnelType } from "@/store/personnel-store";
 import UpdatePersonnel from "./update_personnel";
+import RemovePersonnel from "./remove_personnel";
 export default function PersonnelCard({ member }: { member: personnelType }) {
   return (
     <div
@@ -14,6 +15,7 @@ export default function PersonnelCard({ member }: { member: personnelType }) {
 
       <div className="mt-auto flex items-center gap-4">
         <UpdatePersonnel personnel={member} />
+        {member.id && <RemovePersonnel id={member.id} />}
       </div>
     </div>
   );

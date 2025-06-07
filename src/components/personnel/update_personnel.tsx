@@ -68,7 +68,7 @@ export default function UpdatePersonnel({ personnel }: { personnel: personnelTyp
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="ghost">
           <Edit />
         </Button>
       </DialogTrigger>
