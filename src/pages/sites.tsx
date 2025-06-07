@@ -1,4 +1,3 @@
-import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
 import { useStore } from "@/store/use-store";
 import { siteStore, type siteType } from "@/store/site-store";

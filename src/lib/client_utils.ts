@@ -32,7 +32,7 @@ export const CreateClient = async ({ data, url, token }: CreateClientProp) => {
   }
 };
 
-export const editSite = async ({ data, url, token }: CreateClientProp) => {
+export const editClient = async ({ data, url, token }: CreateClientProp) => {
   try {
     const response = await axios.put(url, data, {
       headers: {
@@ -46,7 +46,7 @@ export const editSite = async ({ data, url, token }: CreateClientProp) => {
   }
 };
 
-export const removeSite = async (token: string, url: string) => {
+export const removeClient = async (token: string, url: string) => {
   try {
     const sites = await axios.delete(url, {
       headers: {
@@ -60,7 +60,7 @@ export const removeSite = async (token: string, url: string) => {
   }
 };
 
-export const listSites = async (url: string) => {
+export const listClient = async (url: string) => {
   try {
     const sites = await axios.get(url);
     return sites;

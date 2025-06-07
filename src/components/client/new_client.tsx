@@ -16,12 +16,11 @@ import { Separator } from "@/components/ui/separator";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
 
-import { siteStore } from "@/store/site-store";
 import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Command as CommandPrimitive } from "cmdk";
 import { useCallback, useMemo } from "react";
-import { type siteType } from "@/store/site-store";
+import { type siteType, siteStore } from "@/store/site-store";
 import { CreateClient } from "@/lib/client_utils";
 import { useStore } from "@/store/use-store";
 import { toast } from "sonner";

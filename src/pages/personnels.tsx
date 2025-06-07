@@ -8,7 +8,7 @@ export default function Personnels() {
     <div className="">
       <SectionCards />
       <Separator className="my-4" />
-      <DataTable data={data} />
+      {/* <DataTable data={data} /> */}
     </div>
   );
 }

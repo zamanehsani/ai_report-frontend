@@ -9,7 +9,7 @@ export interface siteType {
   isActive: boolean;
 }
 
-export interface SiteState {
+export interface SiteStore {
   sites: siteType[];
   setSites: (obj: siteType[]) => void;
   removeSites: () => void;
@@ -18,23 +18,23 @@ export interface SiteState {
   deleteSite: (id: string) => void;
 }
 
-export const siteStore = create<SiteState>()(
+export const siteStore = create<SiteStore>()(
   devtools(
     persist(
       (set, get) => ({
         sites: [],
-        setSites: (objects) => set({ sites: objects }),
+        setSites: (objects: siteType[]) => set({ sites: objects }),
         removeSites: () => set({ sites: [] }),
-        addSite: (site) => set({ sites: [...get().sites, site] }),
-        updateSite: (new_site) =>
+        addSite: (site: siteType) => set({ sites: [...get().sites, site] }),
+        updateSite: (new_site: siteType) =>
           set({
-            sites: get().sites.map((site_instance) =>
+            sites: get().sites.map((site_instance: siteType) =>
               site_instance.id === new_site.id ? new_site : site_instance
             ),
           }),
-        deleteSite: (id) =>
+        deleteSite: (id: string) =>
           set({
-            sites: get().sites.filter((site) => site.id !== id),
+            sites: get().sites.filter((site: siteType) => site.id !== id),
           }),
       }),
       { name: "SiteStore" }
