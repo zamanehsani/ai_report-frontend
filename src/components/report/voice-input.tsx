@@ -15,10 +15,12 @@ export default function VoiceInput({
   const analyserRef = useRef<AnalyserNode | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const animationRef = useRef<number | null>(null);
+  const streamRef = useRef<MediaStream | null>(null); // <-- Add this line
 
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream; // <-- Store the stream
       audioChunks.current = [];
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.ondataavailable = (e) => {
@@ -29,6 +31,8 @@ export default function VoiceInput({
         setAudioUrl(URL.createObjectURL(audioBlob));
         if (onRecordingComplete) onRecordingComplete(audioBlob);
         stopVisualizer();
+        streamRef.current?.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
       };
       mediaRecorderRef.current.start();
       setIsRecording(true);
