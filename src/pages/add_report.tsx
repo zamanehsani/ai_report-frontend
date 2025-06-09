@@ -16,12 +16,20 @@ import { Send, X } from "lucide-react";
 import { useState } from "react";
 import { useRef } from "react";
 import { useStore } from "@/store/use-store";
+import { transcribeAudio } from "@/components/report/audio-to-text";
+import { describeImage } from "@/components/report/image-to-text";
+import { aiSummary, type inputProp } from "@/components/report/ai-summary";
+
 export default function AddReports() {
   const sites = siteStore((state) => state.sites);
   const user = useStore((state) => state.user);
   const [dateNTime, setDateNTime] = useState(new Date());
   const [selectedSite, setSelectedSite] = useState("");
   const [reportBody, setReportBody] = useState("");
+
+  const [audioDesc, setAudioDesc] = useState("");
+  const [imageDesc, setImageDesc] = useState("");
+  const [aiSum, setAISum] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
@@ -46,12 +54,47 @@ export default function AddReports() {
   };
 
   const handleSubmit = () => {
-    console.log("Date and Time", dateNTime);
-    console.log("user", user.email);
-    console.log("site", selectedSite);
-    console.log("report body: ", reportBody);
-    console.log("image", imageFile);
-    console.log("voice", audioBlob);
+    if (audioBlob) {
+      transcribeAudio(audioBlob)
+        .then((response) => {
+          setAudioDesc(response);
+          console.log("audio transcripted and descripted: ", response);
+          console.log("\n\n");
+          if (imageFile) {
+            describeImage(imageFile)
+              .then((res) => {
+                setImageDesc(res);
+                console.log("image summarized: ", res);
+                console.log("\n\n");
+                if (user.email) {
+                  console.log("generating the report by AI: ");
+                  const data: inputProp = {
+                    site: selectedSite,
+                    dateNTime,
+                    reportBody,
+                    user: user.email,
+                    audioDesc,
+                    imageDesc: res,
+                  };
+                  aiSummary(data)
+                    .then((res) => {
+                      console.log("res: ", res);
+                    })
+                    .catch((error) => {
+                      console.log("error: ", error);
+                    });
+                }
+              })
+              .catch((error) => {
+                console.log("error while doing the checking for image: ", error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log("error happened while doing the audio:", error);
+          console.log("\n\n");
+        });
+    }
   };
   return (
     <section className="border-b-1 pb-2 flex flex-col md:flex-row items-center-safe justify-center gap-4 w-full max-w-2xl mx-auto mt-8">
