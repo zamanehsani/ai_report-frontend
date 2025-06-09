@@ -11,6 +11,7 @@ import Personnels from "./pages/personnels.tsx";
 import Reports from "./pages/reports.tsx";
 import Sites from "./pages/sites.tsx";
 import PrivateRoute from "./private-routes.tsx";
+import AddReports from "./pages/add_report.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,11 +20,12 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/" element={<LoginPage />} />
         <Route element={<PrivateRoute />}>
           <Route path="dashboard" element={<App />}>
-            <Route index element={<Analytic />} />
+            <Route index element={<Reports />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="add-report" element={<AddReports />} />
             <Route path="personnels" element={<Personnels />} />
             <Route path="clients" element={<Clients />} />
             <Route path="sites" element={<Sites />} />
-            <Route path="reports" element={<Reports />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Route>
