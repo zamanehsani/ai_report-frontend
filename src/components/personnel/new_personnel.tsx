@@ -16,6 +16,12 @@ import { useStore } from "@/store/use-store";
 import { personnelStore } from "@/store/personnel-store";
 import { CreatePersonnel } from "@/lib/personnel_utils";
 import { toast } from "sonner";
+import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
+import { Command as CommandPrimitive } from "cmdk";
+import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useCallback, useMemo } from "react";
+import { type siteType, siteStore } from "@/store/site-store";
 
 export default function NewPersonnel() {
   const [firstName, setFirstName] = useState("");
@@ -25,6 +31,28 @@ export default function NewPersonnel() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
+
+  const sites = siteStore((state) => state.sites);
+  const [selectedSites, setSelectedSites] = useState<siteType[]>([]);
+  const [inputValue, setInputValue] = useState("");
+
+  const handleUnselect = useCallback((site: siteType) => {
+    setSelectedSites((prev) => prev.filter((s) => s.id !== site.id));
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Backspace" && selectedSites.length > 0) {
+        setSelectedSites((prev) => prev.slice(0, -1));
+      }
+    },
+    [selectedSites]
+  );
+
+  const filteredSites = useMemo(
+    () => sites.filter((site) => !selectedSites.includes(site)),
+    [selectedSites]
+  );
 
   const base_url = import.meta.env.VITE_BASE_URL || "/";
   const token = useStore((state) => state.token);
@@ -39,12 +67,13 @@ export default function NewPersonnel() {
       email,
       phone,
       password,
+      sites: selectedSites.map((site) => site.id),
     };
     const url = `${base_url}api/personnel/register/`;
     CreatePersonnel({ data, url, token })
       .then((res) => {
         // add to the state and show a toast
-        console.log("res:", res);
+
         addPersonnel(res.user);
         toast("Personnel Registered", {
           description: res.message,
@@ -54,12 +83,6 @@ export default function NewPersonnel() {
           },
         });
         setOpen(false);
-        // setFirstName("");
-        // setMiddleName("");
-        // setLastName("");
-        // setPhone("");
-        // setEmail("");
-        // setPassword("");
       })
       .catch((error) => {
         toast("Error", {
@@ -70,7 +93,6 @@ export default function NewPersonnel() {
           },
         });
       });
-    console.log("submitting here...");
   };
 
   return (
@@ -80,7 +102,7 @@ export default function NewPersonnel() {
       </DialogTrigger>
       <DialogContent>
         <form onSubmit={(e: any) => handleSubmit(e)}>
-          <DialogHeader>
+          <DialogHeader className="pb-4">
             <DialogTitle>New profile</DialogTitle>
             <DialogDescription>
               Make changes to your profile here. Click save when you&apos;re done.
@@ -141,16 +163,84 @@ export default function NewPersonnel() {
                 />
               </div>
             </div>
-            <div className="grid gap-3">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                name="password"
-                type="text"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+            <div className="grid grid-cols-1">
+              <div className="w-full">
+                <Label htmlFor="selectSite" className="pb-1">
+                  Select Site
+                </Label>
+                <Command className="overflow-visible" id="selectSite">
+                  <div className="rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                    <div className="flex flex-wrap gap-2">
+                      {selectedSites.map((site) => {
+                        return (
+                          <Badge
+                            key={site.id}
+                            variant="secondary"
+                            className="border flex items-center">
+                            {site.name}
+                            <span
+                              className="flex items-center justify-center size-4 text-muted-foreground hover:text-foreground ml-2 cursor-pointer"
+                              onMouseDown={(e: any) => {
+                                e.preventDefault();
+                              }}
+                              onClick={() => {
+                                return handleUnselect(site);
+                              }}>
+                              <X />
+                            </span>
+                          </Badge>
+                        );
+                      })}
+                      <CommandPrimitive.Input
+                        onKeyDown={handleKeyDown}
+                        onValueChange={setInputValue}
+                        value={inputValue}
+                        onBlur={() => setOpen(false)}
+                        onFocus={() => setOpen(true)}
+                        placeholder="Select Sites..."
+                        className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+                      />
+                    </div>
+                  </div>
+                  <div className="relative mt-2">
+                    <CommandList>
+                      {open && !!filteredSites.length && (
+                        <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none">
+                          <CommandGroup className="h-full overflow-auto">
+                            {filteredSites.map((site) => {
+                              return (
+                                <CommandItem
+                                  key={site.id}
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                  }}
+                                  onSelect={() => {
+                                    setInputValue("");
+                                    setSelectedSites((prev) => [...prev, site]);
+                                  }}
+                                  className={"cursor-pointer"}>
+                                  {site.name}
+                                </CommandItem>
+                              );
+                            })}
+                          </CommandGroup>
+                        </div>
+                      )}
+                    </CommandList>
+                  </div>
+                </Command>
+              </div>
+              <div className="grid gap-3">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="text"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
             </div>
           </div>
           <DialogFooter className="mt-3">
