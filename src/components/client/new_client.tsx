@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Command as CommandPrimitive } from "cmdk";
 import { useCallback, useMemo } from "react";
-import { type clientType, clientStore } from "@/store/client-store";
+import { clientStore } from "@/store/client-store";
 import { type siteType, siteStore } from "@/store/site-store";
 import { CreateClient } from "@/lib/client_utils";
 import { useStore } from "@/store/use-store";

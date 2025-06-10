@@ -15,6 +15,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+import { Activity } from "lucide-react";
 export default function Sites() {
   const setSites = siteStore((state) => state.setSites);
   const updateSite = siteStore((state) => state.updateSite);
@@ -36,7 +37,6 @@ export default function Sites() {
     listSites(`${base_url}api/site/?page=${page}&pageSize=${pageSize}`)
       .then((res: any) => {
         // Assuming API returns total count of sites
-
         setSites(res.data.sites);
         setTotalPages(Math.ceil(res.data.total / pageSize) || 1); // Set total pages from API
         setLoading(false);
@@ -135,6 +135,11 @@ export default function Sites() {
         {loading ? (
           <div className="col-span-full flex justify-center items-center py-10">
             <span className="text-muted-foreground">Loading sites...</span>
+          </div>
+        ) : sites && sites.length === 0 ? (
+          <div className="col-span-full flex flex-col gap-y-5 justify-center items-center py-10">
+            <Activity className="size-24" />
+            <span className="text-muted-foreground">No sites.</span>
           </div>
         ) : (
           sites?.map((site: siteType) => (

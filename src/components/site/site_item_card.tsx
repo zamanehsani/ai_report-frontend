@@ -3,7 +3,6 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator";
 import { Trash, Edit } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import {
   Dialog,
   DialogClose,
@@ -14,11 +13,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
 import { type siteType } from "@/store/site-store";
 import { useState } from "react";
+import { clientStore } from "@/store/client-store";
+
 export default function SiteItemCard({
   site,
   onEdit,
@@ -28,10 +37,11 @@ export default function SiteItemCard({
   onEdit: (site: siteType) => void;
   onRemove: (id: string) => void;
 }) {
+  const clientsList = clientStore((state) => state.clients);
   const [name, setName] = useState(site.name);
   const [address, setAddress] = useState(site.address);
   const [location, setLocation] = useState(site.location);
-
+  const [clientId, setClientId] = useState("");
   return (
     <Card key={site.id} className="w-full gap-0 py-0">
       <CardHeader className="flex flex-row items-center py-2 justify-between ">
@@ -97,32 +107,64 @@ export default function SiteItemCard({
                   Make changes here. Click save when you&apos;re done.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4">
-                <div className="grid gap-3">
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    onChange={(e) => setName(e.target.value)}
-                    id="name"
-                    name="name"
-                    defaultValue={name}
-                  />
+              <div className="grid gap-6 py-4">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="grid col-span-2 gap-1">
+                    <Label htmlFor="name">Site Name</Label>
+                    <Input
+                      id="name"
+                      onChange={(e: any) => setName(e.target.value)}
+                      type="text"
+                      value={name}
+                      placeholder="SN002"
+                    />
+                  </div>
+                  <div className="grid gap-1">
+                    <Label htmlFor="selectSite">Select Client</Label>
+                    <Select
+                      onValueChange={(value) => {
+                        setClientId(value);
+                      }}
+                      defaultValue={site?.clients[0]?.id}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Client" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>clients</SelectLabel>
+                          {clientsList &&
+                            clientsList.map((clnt) => (
+                              <SelectItem key={clnt.id ?? ""} value={clnt.id ?? ""}>
+                                {clnt.officialName}
+                              </SelectItem>
+                            ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <div className="grid gap-3">
-                  <Label htmlFor="address">Address</Label>
+
+                <div className="grid gap-1">
+                  <div className="flex items-center">
+                    <Label htmlFor="address">Address</Label>
+                  </div>
                   <Input
-                    onChange={(e) => setAddress(e.target.value)}
                     id="address"
-                    name="address"
-                    defaultValue={address}
+                    value={address}
+                    onChange={(e: any) => setAddress(e.target.value)}
+                    type="text"
                   />
                 </div>
-                <div className="grid gap-3">
-                  <Label htmlFor="location">Location Cordinates</Label>
+
+                <div className="grid gap-1">
+                  <div className="flex items-center">
+                    <Label htmlFor="location">Location Coordinate</Label>
+                  </div>
                   <Input
-                    onChange={(e) => setLocation(e.target.value)}
                     id="location"
-                    name="location"
-                    defaultValue={location}
+                    value={location}
+                    onChange={(e: any) => setLocation(e.target.value)}
+                    type="text"
                   />
                 </div>
               </div>
@@ -130,7 +172,17 @@ export default function SiteItemCard({
                 <DialogClose asChild>
                   <Button variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button onClick={() => onEdit({ ...site, name, address, location })} type="submit">
+                <Button
+                  onClick={() =>
+                    onEdit({
+                      ...site,
+                      name,
+                      address,
+                      location,
+                      clients: [clientId],
+                    })
+                  }
+                  type="submit">
                   Save changes
                 </Button>
               </DialogFooter>
