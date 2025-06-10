@@ -28,9 +28,13 @@ export default function NewPersonnel() {
   const [lastName, setLastName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [phone, setPhone] = useState("");
+  const [second_email, setSecondEmail] = useState("");
+  const [second_phone, setSecondPhone] = useState("");
+  const [second_name, setSecondName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const sites = siteStore((state) => state.sites);
   const [selectedSites, setSelectedSites] = useState<siteType[]>([]);
@@ -82,6 +86,7 @@ export default function NewPersonnel() {
             onClick: () => console.log("toast closed."),
           },
         });
+        setOpenDialog(false);
         setOpen(false);
       })
       .catch((error) => {
@@ -96,7 +101,7 @@ export default function NewPersonnel() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
         <Button variant="outline">Register New Personnel</Button>
       </DialogTrigger>
@@ -142,7 +147,7 @@ export default function NewPersonnel() {
             </div>
             <div className="flex flex-col gap-4 sm:flex-row">
               <div className="flex-1 grid gap-1">
-                <Label htmlFor="phone">Phone</Label>
+                <Label htmlFor="phone">Primary Phone</Label>
                 <Input
                   id="phone"
                   name="phone"
@@ -152,7 +157,7 @@ export default function NewPersonnel() {
                 />
               </div>
               <div className="flex-1 grid gap-1">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Primary Email</Label>
                 <Input
                   id="email"
                   name="email"
@@ -160,6 +165,40 @@ export default function NewPersonnel() {
                   value={email}
                   required
                   onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="flex-1 grid gap-1">
+                <Label htmlFor="secondary_phone">Secondary Phone</Label>
+                <Input
+                  id="secondary_phone"
+                  name="phsecondary_phoneone"
+                  value={second_phone}
+                  required
+                  onChange={(e) => setSecondPhone(e.target.value)}
+                />
+              </div>
+              <div className="flex-1 grid gap-1">
+                <Label htmlFor="second_email">Secondary Email</Label>
+                <Input
+                  id="second_email"
+                  name="second_email"
+                  type="email"
+                  value={second_email}
+                  required
+                  onChange={(e) => setSecondEmail(e.target.value)}
+                />
+              </div>
+              <div className="flex-1 grid gap-1">
+                <Label htmlFor="second_name">Secondary Name</Label>
+                <Input
+                  id="second_name"
+                  name="second_name"
+                  type="text"
+                  value={second_name}
+                  required
+                  onChange={(e) => setSecondName(e.target.value)}
                 />
               </div>
             </div>
