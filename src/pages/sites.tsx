@@ -36,6 +36,7 @@ export default function Sites() {
     listSites(`${base_url}api/site/?page=${page}&pageSize=${pageSize}`)
       .then((res: any) => {
         // Assuming API returns total count of sites
+
         setSites(res.data.sites);
         setTotalPages(Math.ceil(res.data.total / pageSize) || 1); // Set total pages from API
         setLoading(false);

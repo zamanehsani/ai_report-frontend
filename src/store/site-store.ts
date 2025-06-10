@@ -6,6 +6,7 @@ export interface siteType {
   name: string;
   address: string;
   location: string;
+  clients?: [];
   isActive: boolean;
 }
 

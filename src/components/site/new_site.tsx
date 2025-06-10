@@ -24,7 +24,7 @@ export default function NewSite() {
   const [address, setAddress] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [location, setLocation] = useState("");
-  const [clientId, setClientId] = useState("cmbc4ru3k0000t2128d7wqckd");
+  const [clients, setClients] = useState(["cmblwh8ni000ot2pjj2jdwqs4"]);
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -39,7 +39,7 @@ export default function NewSite() {
       address,
       location,
       isActive,
-      clientId,
+      clients,
     };
     const url = `${base_url}api/site/add`;
     CreateSite({ data, url, token })
@@ -109,7 +109,6 @@ export default function NewSite() {
                   id="location"
                   onChange={(e: any) => setLocation(e.target.value)}
                   type="text"
-                  required
                 />
               </div>
 

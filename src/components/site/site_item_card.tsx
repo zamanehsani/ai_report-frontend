@@ -44,27 +44,38 @@ export default function SiteItemCard({
           </Avatar>
           <div className="flex flex-col gap-0.5">
             <h6 className="text-sm leading-none font-bold">{site.name.toUpperCase()}</h6>
-            <span
-              className="text-xs font-light text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] block"
-              title={site.address}>
-              {site.address}
+            <span className="text-xs font-light text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] block">
+              {site.clients?.map((client: any) => {
+                return <span className="pr-1">{client.officialName}</span>;
+              })}
             </span>
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-0">
         <div className="relative aspect-video border-y">
-          <iframe
-            title="Site Location"
-            width="100%"
-            height="100%"
-            style={{ border: 0, minHeight: 180, width: "100%" }}
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
-            src={`https://www.google.com/maps?q=${encodeURIComponent(
-              site.location
-            )}&output=embed`}></iframe>
+          {site.location ? (
+            <iframe
+              title="Site Location"
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: 180, width: "100%" }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps?q=${encodeURIComponent(
+                site.location
+              )}&output=embed`}></iframe>
+          ) : (
+            <div className="flex items-center justify-center h-full min-h-[180px] text-muted-foreground text-sm">
+              Location is missing
+            </div>
+          )}
+        </div>
+        <div className="px-2">
+          <span className="text-xs font-light text-muted-foreground leading-tight">
+            {site.address}
+          </span>
         </div>
       </CardContent>
       <Separator />
