@@ -97,7 +97,7 @@ export default function AddReports() {
     }
   };
   return (
-    <section className="border-b-1 pb-2 flex flex-col md:flex-row items-center-safe justify-center gap-4 w-full max-w-2xl mx-auto mt-8">
+    <section className=" pb-2 flex flex-col md:flex-row items-center-safe justify-center gap-4 w-full max-w-2xl mx-auto mt-8">
       <div className="w-full px-3">
         <h2 className="text-2xl font-bold mb-2">Create a Report</h2>
         <div className="text-sm text-muted-foreground mb-4">{new Date().toLocaleString()}</div>

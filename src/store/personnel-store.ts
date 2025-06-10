@@ -8,7 +8,11 @@ export interface personnelType {
   lastName: string;
   phone: string;
   email: string;
+  second_name: string;
+  second_email: string;
+  second_phone: string;
   imageUrl?: string;
+  photoUrl?: string;
   password?: string;
   sites?: string[];
 }

@@ -21,6 +21,18 @@ export const CreatePersonnel = async ({ data, url, token }: CreatePersonnelProp)
   }
 };
 
+export const UploadProfile = async ({ formData, url, token }: any) => {
+  try {
+    const response = await axios.post(url, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    throw error.response || "Fialed to upload";
+  }
+};
 export const editPersonnel = async ({ data, url, token }: CreatePersonnelProp) => {
   try {
     const response = await axios.put(url, data, {

@@ -29,6 +29,9 @@ export default function UpdatePersonnel({ personnel }: { personnel: personnelTyp
   const [middleName, setMiddleName] = useState(personnel.lastName);
   const [phone, setPhone] = useState(personnel.phone);
   const [email, setEmail] = useState(personnel.email);
+  const [second_email, setSecondEmail] = useState(personnel.second_email);
+  const [second_name, setSecondName] = useState(personnel.second_name);
+  const [second_phone, setSecondPhone] = useState(personnel.second_phone);
 
   const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -67,6 +70,9 @@ export default function UpdatePersonnel({ personnel }: { personnel: personnelTyp
       lastName,
       email,
       phone,
+      second_email,
+      second_name,
+      second_phone,
       sites: selectedSites.map((site: any) => site.id),
     };
 
@@ -163,6 +169,38 @@ export default function UpdatePersonnel({ personnel }: { personnel: personnelTyp
                 />
               </div>
             </div>
+            <div className="flex flex-col gap-4 sm:flex-row">
+              <div className="flex-1 grid gap-1">
+                <Label htmlFor="second_phone">Secondary Phone</Label>
+                <Input
+                  id="second_phone"
+                  name="second_phone"
+                  value={second_phone}
+                  onChange={(e) => setSecondPhone(e.target.value)}
+                />
+              </div>
+              <div className="flex-1 grid gap-1">
+                <Label htmlFor="second_email">Secondary Email</Label>
+                <Input
+                  id="second_email"
+                  name="second_email"
+                  type="email"
+                  value={second_email}
+                  onChange={(e) => setSecondEmail(e.target.value)}
+                />
+              </div>
+              <div className="flex-1 grid gap-1">
+                <Label htmlFor="second_name">Contact Name</Label>
+                <Input
+                  id="second_name"
+                  name="second_name"
+                  type="text"
+                  value={second_name}
+                  onChange={(e) => setSecondName(e.target.value)}
+                />
+              </div>
+            </div>
+
             <div className="grid gap-1">
               <div className="w-full">
                 <Label htmlFor="selectSite" className="pb-1">

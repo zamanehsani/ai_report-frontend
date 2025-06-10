@@ -56,7 +56,11 @@ export default function SiteItemCard({
             <h6 className="text-sm leading-none font-bold">{site.name.toUpperCase()}</h6>
             <span className="text-xs font-light text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis max-w-[150px] block">
               {site.clients?.map((client: any) => {
-                return <span className="pr-1">{client.officialName}</span>;
+                return (
+                  <span key={client.id + site.id} className="pr-1">
+                    {client.officialName}
+                  </span>
+                );
               })}
             </span>
           </div>

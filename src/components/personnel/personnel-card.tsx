@@ -2,11 +2,20 @@ import type { personnelType } from "@/store/personnel-store";
 import UpdatePersonnel from "./update_personnel";
 import RemovePersonnel from "./remove_personnel";
 import { Badge } from "../ui/badge";
+import ImageProfile from "@/components/personnel/Image-profile";
+
 export default function PersonnelCard({ member }: { member: personnelType }) {
+  const base_url = import.meta.env.VITE_BASE_URL || "/";
   return (
     <div
       key={member.id}
       className="flex flex-col items-center text-center bg-accent py-3 px-6 rounded-lg">
+      <div className="flex justify-center mb-3">
+        <ImageProfile
+          user={member}
+          image_url={`${base_url.replace(/\/$/, "")}${member.photoUrl}`}
+        />
+      </div>
       <h3 className=" text-lg font-semibold">
         {member.firstName} {member.middleName} {member.lastName}
       </h3>
@@ -18,7 +27,6 @@ export default function PersonnelCard({ member }: { member: personnelType }) {
             </Badge>
           );
         })}
-        {/* {member.email} | {member.phone} */}
       </p>
 
       <p>{member.email}</p>
