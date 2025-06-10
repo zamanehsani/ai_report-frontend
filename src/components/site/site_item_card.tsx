@@ -125,6 +125,7 @@ export default function SiteItemCard({
                       onValueChange={(value) => {
                         setClientId(value);
                       }}
+                      // @ts-ignore
                       defaultValue={site?.clients[0]?.id}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select Client" />
