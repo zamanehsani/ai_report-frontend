@@ -18,12 +18,15 @@ import {
 } from "@/components/ui/table";
 
 import { useState, useEffect } from "react";
-import { useStore } from "@/store/use-store";
+import { useStore, type userType } from "@/store/use-store";
 import { listUser } from "@/lib/user_admin_utils";
 
 import EditUser from "./edit_user";
 import RemoveUser from "./remove_user";
 import { Badge } from "@/components/ui/badge";
+
+import { toast } from "sonner";
+import { editUser } from "@/lib/user_admin_utils";
 
 export default function UserTable() {
   const setUsers = useStore((state) => state.setUsers);
@@ -31,9 +34,10 @@ export default function UserTable() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-
+  const updateUsers = useStore((state) => state.updateUsers);
   const users = useStore((state) => state.users);
   const base_url = import.meta.env.VITE_BASE_URL || "/";
+  const token = useStore((state) => state.token);
 
   useEffect(() => {
     setLoading(true);
@@ -76,6 +80,32 @@ export default function UserTable() {
     setPage(newPage);
   };
 
+  const handleStatusChange = (user: userType) => {
+    const base_url = import.meta.env.VITE_BASE_URL || "/";
+    const url = `${base_url}api/admin/${user.id}`;
+    if (user) {
+      editUser({ data: { ...user, isActive: !user.isActive }, url, token })
+        .then((res) => {
+          updateUsers(res.user);
+          toast("Client Update", {
+            description: res?.message,
+            action: {
+              label: "X",
+              onClick: () => console.log("toast closed."),
+            },
+          });
+        })
+        .catch(() => {
+          toast("Error!", {
+            description: "Could not update this client.",
+            action: {
+              label: "X",
+              onClick: () => console.log("toast closed."),
+            },
+          });
+        });
+    }
+  };
   return (
     <div className="w-full">
       <div className="w-full border rounded-md overflow-hidden">
@@ -110,7 +140,10 @@ export default function UserTable() {
                   <TableCell>{user.address}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap max-w-[12rem] gap-2">
-                      <Badge className="p-1 px-2 hover:bg-muted" variant={"outline"}>
+                      <Badge
+                        onClick={() => handleStatusChange(user)}
+                        className="p-1 px-2 hover:bg-muted"
+                        variant={"outline"}>
                         {user.isActive ? "Active" : "Inactive"}
                       </Badge>
                     </div>

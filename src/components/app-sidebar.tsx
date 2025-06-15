@@ -48,11 +48,6 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Sites",
-      url: "./sites",
-      icon: IconChartBar,
-    },
-    {
       title: "Clients",
       url: "./clients",
       icon: IconUsers,
@@ -61,6 +56,11 @@ const data = {
       title: "Personnels",
       url: "./personnels",
       icon: IconUsers,
+    },
+    {
+      title: "Sites",
+      url: "./sites",
+      icon: IconChartBar,
     },
   ],
   navClouds: [
