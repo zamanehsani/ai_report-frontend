@@ -45,7 +45,7 @@ export default function UserTable() {
     listUser(`${base_url}api/admin/list?page=${page}&pageSize=${pageSize}`)
       .then((res: any) => {
         setUsers(res.data.users);
-        console.log("users: ", res.data);
+
         setTotalPages(Math.ceil(res.data.total / pageSize) || 1); // Set total pages from API
         setLoading(false);
       })

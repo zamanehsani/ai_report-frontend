@@ -74,9 +74,9 @@ export default function Personnel() {
       </div>
 
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 ">
-        {personnels.map((member) => (
-          <PersonnelCard key={member.id} member={member} />
-        ))}
+        {personnels &&
+          personnels.length >= 1 &&
+          personnels?.map((member) => <PersonnelCard key={member.id} member={member} />)}
       </div>
       <div className="flex justify-center py-2  mt-auto">
         <Pagination>

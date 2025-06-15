@@ -30,88 +30,70 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-const data = {
-  user: {
-    name: "Admin",
-    email: "info@admin.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Reports",
-      url: "./",
-      icon: IconFolder,
-    },
-    {
-      title: "Users",
-      url: "./admin",
-      icon: IconDashboard,
-    },
-    {
-      title: "Clients",
-      url: "./clients",
-      icon: IconUsers,
-    },
-    {
-      title: "Personnels",
-      url: "./personnels",
-      icon: IconUsers,
-    },
-    {
-      title: "Sites",
-      url: "./sites",
-      icon: IconChartBar,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
+import { useStore } from "@/store/use-store";
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = useStore((state) => state.user);
+
+  let navMain = [];
+
+  if (user?.userType === "client") {
+    navMain = [
+      {
+        title: "Clients",
+        url: "./clients",
+        icon: IconUsers,
+      },
+      {
+        title: "Reports",
+        url: "./",
+        icon: IconFolder,
+      },
+      {
+        title: "Sites",
+        url: "./sites",
+        icon: IconChartBar,
+      },
+    ];
+  } else if (user?.userType === "personnel") {
+    navMain = [
+      {
+        title: "Reports",
+        url: "./",
+        icon: IconFolder,
+      },
+    ];
+  } else {
+    navMain = [
+      {
+        title: "Reports",
+        url: "./",
+        icon: IconFolder,
+      },
+      {
+        title: "Users",
+        url: "./admin",
+        icon: IconDashboard,
+      },
+      {
+        title: "Clients",
+        url: "./clients",
+        icon: IconUsers,
+      },
+      {
+        title: "Personnels",
+        url: "./personnels",
+        icon: IconUsers,
+      },
+      {
+        title: "Sites",
+        url: "./sites",
+        icon: IconChartBar,
+      },
+    ];
+  }
+
+  const navSecondary = [
     {
       title: "Settings",
       url: "#",
@@ -127,31 +109,9 @@ const data = {
       url: "#",
       icon: IconSearch,
     },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
-};
+  ];
 
-import { useStore } from "@/store/use-store";
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const user = useStore((state) => state.user);
-
+  console.log("user: ", user);
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -170,9 +130,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
         {/* <NavDocuments items={data.documents} /> */}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
     </Sidebar>
   );
