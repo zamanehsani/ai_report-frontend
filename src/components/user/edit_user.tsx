@@ -1,0 +1,178 @@
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+  DialogClose,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Edit } from "lucide-react";
+import { useState } from "react";
+import { useStore, type userType } from "@/store/use-store";
+import { toast } from "sonner";
+import { editUser } from "@/lib/user_admin_utils";
+
+export default function EditUser({ user }: { user: userType }) {
+  const [first_name, setFirst_name] = useState(user.firstName);
+  const [middle_name, setMiddle_name] = useState(user.middleName);
+  const [last_name, setLast_name] = useState(user.lastName);
+  const [email, setEmail] = useState(user.email);
+  const [phone, setPhone] = useState(user.phone);
+  const [isActive, setIsActive] = useState(user.isActive);
+  const [userType, setUserTyp] = useState(user.userType);
+  const [address, setAddress] = useState(user.address);
+  const [error, setError] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const base_url = import.meta.env.VITE_BASE_URL || "/";
+  const token = useStore((state) => state.token);
+  const updateUsers = useStore((state) => state.updateUsers);
+
+  // Handler for editing a site (for now, just a placeholder)
+  const handleEditClient = (e: any) => {
+    e.preventDefault();
+    const url = `${base_url}api/admin/${user.id}`;
+    const data = {
+      firstName: first_name,
+      lastName: last_name,
+      middleName: middle_name,
+      email,
+      phone,
+      address,
+      isActive,
+      userType,
+    };
+
+    editUser({ data: data, url, token })
+      .then((res) => {
+        updateUsers(res.user);
+        console.log("res: ", res);
+        toast("Client Update", {
+          description: res?.message,
+          action: {
+            label: "X",
+            onClick: () => console.log("toast closed."),
+          },
+        });
+        setOpenDialog(false);
+      })
+      .catch(() => {
+        toast("Error!", {
+          description: "Could not update this client.",
+          action: {
+            label: "X",
+            onClick: () => console.log("toast closed."),
+          },
+        });
+      });
+  };
+
+  return (
+    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      <DialogTrigger asChild>
+        <Button variant="ghost">
+          <Edit />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <form onSubmit={(e) => handleEditClient(e)}>
+          <DialogHeader>
+            <DialogTitle>Update User</DialogTitle>
+            <DialogDescription>Please enter any changes here and hit Save.</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-6 py-4">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="grid gap-1">
+                <Label htmlFor="name">First Name</Label>
+                <Input
+                  id="name"
+                  onChange={(e: any) => setFirst_name(e.target.value)}
+                  type="text"
+                  placeholder="ABC LLC CO"
+                  defaultValue={first_name}
+                />
+              </div>
+              <div className="grid gap-1">
+                <Label htmlFor="middleName">Middel Name</Label>
+                <Input
+                  id="middleName"
+                  onChange={(e: any) => setMiddle_name(e.target.value)}
+                  type="text"
+                  placeholder="ABC LLC CO"
+                  defaultValue={middle_name}
+                />
+              </div>
+              <div className="grid gap-1">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  onChange={(e: any) => setLast_name(e.target.value)}
+                  type="text"
+                  placeholder="ABC LLC CO"
+                  defaultValue={last_name}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label htmlFor="email" className="pb-1">
+                  Email
+                </Label>
+                <Input
+                  defaultValue={email}
+                  id="email"
+                  onChange={(e: any) => setEmail(e.target.value)}
+                  type="email"
+                  placeholder="info@abc.com"
+                />
+              </div>
+              <div>
+                <Label htmlFor="phone" className="pb-1">
+                  Phone
+                </Label>
+                <Input
+                  id="phone"
+                  defaultValue={phone}
+                  onChange={(e: any) => setPhone(e.target.value)}
+                  type="text"
+                  placeholder="+1(800)222-2222"
+                />
+              </div>
+            </div>
+            <div className="grid ">
+              <Label htmlFor="address">Address</Label>
+              <Input
+                defaultValue={address}
+                id="address"
+                placeholder="123st downtown NY"
+                onChange={(e: any) => setAddress(e.target.value)}
+                type="text"
+              />
+            </div>
+            <div>
+              {error && (
+                <div className="text-red-500 text-sm text-center font-medium mb-2">{error}</div>
+              )}
+            </div>
+          </div>
+
+          <Separator className="my-2" />
+          <DialogFooter className="">
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button type="submit">Save</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

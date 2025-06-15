@@ -14,11 +14,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Send, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { useRef } from "react";
 import { useStore } from "@/store/use-store";
 import { RegisterUser } from "@/lib/user_admin_utils";
+import { useNavigate } from "react-router";
 
-export default function UserProfile() {
+export default function AddAdminUser() {
   const addUsers = useStore((state) => state.addUsers);
   const token = useStore((state) => state.token);
   const [userType, setUserType] = useState("");
@@ -31,6 +31,8 @@ export default function UserProfile() {
   const [address, setAddress] = useState("");
   const [note, setNote] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     const data = {
@@ -57,6 +59,8 @@ export default function UserProfile() {
             onClick: () => console.log("toast closed."),
           },
         });
+
+        navigate("/dashboard/admin");
       })
       .catch((error) => {
         console.log("error: ", error);
@@ -69,6 +73,7 @@ export default function UserProfile() {
         });
       });
   };
+
   return (
     <section className=" pb-2 flex flex-col md:flex-row items-center-safe justify-center gap-4 w-full max-w-2xl mx-auto mt-8">
       <div className="w-full px-3">

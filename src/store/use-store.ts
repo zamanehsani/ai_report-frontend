@@ -5,13 +5,14 @@ import { devtools, persist } from "zustand/middleware";
 export interface userType {
   firstName?: string;
   lastName?: string;
-  middlename?: string;
+  middleName?: string;
   email?: string;
   phone?: string;
   id?: string;
   address?: string;
   photoUrl?: string;
   isActive?: boolean;
+  userType?: string;
 }
 
 export interface AuthState {

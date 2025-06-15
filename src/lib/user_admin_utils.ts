@@ -1,8 +1,8 @@
-import type { personnelType } from "@/store/personnel-store";
+import type { userType } from "@/store/use-store";
 import axios from "axios";
 
 interface CreateUserProp {
-  data: personnelType;
+  data: userType;
   url: string;
   token: string;
 }

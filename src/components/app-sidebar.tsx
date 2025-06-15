@@ -38,20 +38,19 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "Reports",
       url: "./",
+      icon: IconFolder,
+    },
+    {
+      title: "Users",
+      url: "./admin",
       icon: IconDashboard,
     },
-
     {
       title: "Sites",
       url: "./sites",
       icon: IconChartBar,
-    },
-    {
-      title: "Reports",
-      url: "./reports",
-      icon: IconFolder,
     },
     {
       title: "Clients",
