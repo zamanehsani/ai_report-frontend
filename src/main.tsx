@@ -12,6 +12,7 @@ import Reports from "./pages/reports.tsx";
 import Sites from "./pages/sites.tsx";
 import PrivateRoute from "./private-routes.tsx";
 import AddReports from "./pages/add_report.tsx";
+import UserProfile from "./pages/user-profile.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -21,7 +22,7 @@ createRoot(document.getElementById("root")!).render(
         <Route element={<PrivateRoute />}>
           <Route path="dashboard" element={<App />}>
             <Route index element={<Reports />} />
-            <Route path="reports" element={<Reports />} />
+            <Route path="profile" element={<UserProfile />} />
             <Route path="add-report" element={<AddReports />} />
             <Route path="personnels" element={<Personnels />} />
             <Route path="clients" element={<Clients />} />
