@@ -14,6 +14,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useNavigate } from "react-router";
 
 import { Activity } from "lucide-react";
 export default function Sites() {
@@ -30,6 +31,16 @@ export default function Sites() {
   const sites = siteStore((state) => state.sites);
 
   const base_url = import.meta.env.VITE_BASE_URL || "/";
+
+  const navigate = useNavigate();
+  const user = useStore((state) => state.user);
+
+  useEffect(() => {
+    if (user && user.userType === "personnel") {
+      console.log("you do not have access to this page. ");
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user]);
 
   useEffect(() => {
     setLoading(true);

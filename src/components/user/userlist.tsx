@@ -27,6 +27,7 @@ import { Badge } from "@/components/ui/badge";
 
 import { toast } from "sonner";
 import { editUser } from "@/lib/user_admin_utils";
+import { useNavigate } from "react-router";
 
 export default function UserTable() {
   const setUsers = useStore((state) => state.setUsers);
@@ -38,6 +39,17 @@ export default function UserTable() {
   const users = useStore((state) => state.users);
   const base_url = import.meta.env.VITE_BASE_URL || "/";
   const token = useStore((state) => state.token);
+  const user = useStore((state) => state.user);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("cheking if the user can access this page...");
+    if (user && user.userType !== "admin") {
+      console.log("user is not admin and redirecting back to dashabord");
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user]);
 
   useEffect(() => {
     setLoading(true);

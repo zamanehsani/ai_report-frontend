@@ -1,4 +1,3 @@
-import type { Users2 } from "lucide-react";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 

@@ -17,7 +17,7 @@ import { useState } from "react";
 import { useStore } from "@/store/use-store";
 import { RegisterUser } from "@/lib/user_admin_utils";
 import { useNavigate } from "react-router";
-
+import { useEffect } from "react";
 export default function AddAdminUser() {
   const addUsers = useStore((state) => state.addUsers);
   const token = useStore((state) => state.token);
@@ -33,6 +33,14 @@ export default function AddAdminUser() {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+
+  const user = useStore((state) => state.user);
+
+  useEffect(() => {
+    if (user && user.userType !== "admin") {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user]);
 
   const handleSubmit = () => {
     const data = {
