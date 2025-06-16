@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import VoiceInput from "@/components/report/voice-input";
@@ -19,6 +20,7 @@ import { useStore } from "@/store/use-store";
 import { transcribeAudio } from "@/components/report/audio-to-text";
 import { describeImage } from "@/components/report/image-to-text";
 import { aiSummary, type inputProp } from "@/components/report/ai-summary";
+import { generateReportPDF } from "@/components/report/make-pdf";
 
 export default function AddReports() {
   const sites = siteStore((state) => state.sites);
@@ -38,6 +40,8 @@ export default function AddReports() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
+  const [reportFile, setReportFile] = useState<File | null>(null);
+
   const handlePhotoChange = (event: any) => {
     event.preventDefault();
     const file = event.target.files?.[0];
@@ -52,20 +56,44 @@ export default function AddReports() {
     setImageFile(null);
     setImagePreview(null);
   };
+  const genPDF = async () => {
+    if (selectedSite && user && aiSum) {
+      const pdfFile = await generateReportPDF({
+        imageFile,
+        user,
+        site: selectedSite,
+        text: aiSum,
+      }).then((res) => {
+        if (res) {
+          setReportFile(res);
+          // To download the PDF file
+          const url = URL.createObjectURL(res);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "report.pdf";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+
+          // send back to the server
+        }
+      });
+      console.log("pdf file: ");
+    }
+  };
 
   const handleSubmit = () => {
     if (audioBlob) {
       transcribeAudio(audioBlob)
         .then((response) => {
           setAudioDesc(response);
-          console.log("audio transcripted and descripted: ", response);
-          console.log("\n\n");
+          console.log("audio transcripted and described ");
           if (imageFile) {
             describeImage(imageFile)
               .then((res) => {
                 setImageDesc(res);
-                console.log("image summarized: ", res);
-                console.log("\n\n");
+                console.log("image summarized ");
                 if (user.email) {
                   console.log("generating the report by AI: ");
                   const data: inputProp = {
@@ -78,7 +106,10 @@ export default function AddReports() {
                   };
                   aiSummary(data)
                     .then((res) => {
-                      console.log("res: ", res);
+                      console.log("result from AI summary ");
+                      setAISum(res);
+                      // make the pdf file and send that to backend with all other parts
+                      genPDF();
                     })
                     .catch((error) => {
                       console.log("error: ", error);

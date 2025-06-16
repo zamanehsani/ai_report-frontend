@@ -21,17 +21,15 @@ export async function aiSummary({
   imageDesc,
   audioDesc,
 }: inputProp): Promise<string> {
-  const prompt = `Below is the some information to generate a report. Please go through each part and give me back a summary of the deferent datas.
-  \n
-  site (name of a place): ${site}
+  const prompt = `Below is the some information to generate a report. Please go through each part and give me back the formal report.
+  \nsite (name of a place): ${site}
   date and time: ${dateNTime}
   Personnel email: ${user}
   Personnel description: ${reportBody}
   image description of the situation or place: ${imageDesc}
-  audio recording of the personnel of the place/situation: ${audioDesc} 
+  audio recording of the personnel of the place/situation: ${audioDesc}.
 `;
 
-  console.log("prompt: ", prompt);
   const response = await ai.models.generateContent({
     model: "gemini-2.0-flash",
     contents: createUserContent([prompt]),

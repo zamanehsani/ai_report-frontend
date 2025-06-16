@@ -15,6 +15,7 @@ import { type siteType, siteStore } from "@/store/site-store";
 
 import { useStore } from "@/store/use-store";
 import { toast } from "sonner";
+import { Link } from "react-router";
 
 export default function Reports() {
   const [open, setOpen] = useState(false);
@@ -53,9 +54,9 @@ export default function Reports() {
         {/* the filter, comes here. */}
         <div className="border-b-1 pb-2 flex flex-col md:flex-row items-center-safe justify-center gap-4 ">
           <Button asChild variant={"outline"}>
-            <a href="add-report">
+            <Link to="add-report">
               <Plus />
-            </a>
+            </Link>
           </Button>
           <div className=" sm:w-[70%] md:w-fit">
             <Command className="overflow-visible " id="selectSite">
