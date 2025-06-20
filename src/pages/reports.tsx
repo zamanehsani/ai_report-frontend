@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { File } from "lucide-react";
+
 import { DateTimePicker } from "@/components/report/report-filter";
 
 import { Label } from "@/components/ui/label";
 
-import { Edit, X, Plus, Send } from "lucide-react";
-import { useState } from "react";
+import { Edit, X, Plus, Send, Satellite } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
@@ -16,13 +16,18 @@ import { type siteType, siteStore } from "@/store/site-store";
 import { useStore } from "@/store/use-store";
 import { toast } from "sonner";
 import { Link } from "react-router";
+import AReport from "@/components/report/report-item";
+import { listReport } from "@/lib/report_utils";
+import { reportStore, type reportType } from "@/store/report-store";
 
 export default function Reports() {
   const [open, setOpen] = useState(false);
-
+  const base_url = import.meta.env.VITE_BASE_URL;
   const sites = siteStore((state) => state.sites);
   const [selectedSites, setSelectedSites] = useState<any>([]);
   const [inputValue, setInputValue] = useState("");
+  const setReport = reportStore((state) => state.setReport);
+  const reports = reportStore((state) => state.reports);
 
   const handleUnselect = useCallback((site: siteType) => {
     setSelectedSites((prev: any) => prev.filter((s: any) => s.id !== site.id));
@@ -42,12 +47,20 @@ export default function Reports() {
     [selectedSites]
   );
 
-  const items = [
-    {
-      title: "Industry Recognition",
-      category: "Achievement",
-    },
-  ];
+  const getReports = () => {
+    listReport(`${base_url}api/report/`)
+      .then((res) => {
+        console.log(res.data.reports);
+        setReport(res.data.reports);
+      })
+      .catch((err) => console.log("err: ", err));
+  };
+
+  useEffect(() => {
+    getReports();
+    console.log("listing the reports");
+  }, []);
+
   return (
     <section className="py-6">
       <div className="container px-0 md:px-8">
@@ -126,19 +139,8 @@ export default function Reports() {
         </div>
 
         <div className="flex flex-col max-w-screen-sm  mx-auto mt-5">
-          {items.map((item: { title: string; category: string }, index: number) => (
-            <div className="flex items-center gap-4 px-4 py-2 border rounded-lg my-1" key={index}>
-              <div className="flex flex-col gap-1">
-                <h3 className="font-semibold">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.category}</p>
-              </div>
-              <Button variant="outline" asChild>
-                <a className="order-3 ml-auto w-fit gap-2 md:order-none" href="#">
-                  <span>View Report</span>
-                  <File className="h-4 w-4" />
-                </a>
-              </Button>
-            </div>
+          {reports.map((item: reportType, index: number) => (
+            <AReport item={item} key={index} />
           ))}
         </div>
       </div>

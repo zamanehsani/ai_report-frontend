@@ -9,6 +9,7 @@ import { jsPDF } from "jspdf";
  * @returns {Promise<File>} - Resolves to a File object containing the PDF.
  */
 export async function generateReportPDF({ imageFile, user, text }: any) {
+  console.log("inside the pdf process...");
   const doc = new jsPDF();
   if (!user) {
     console.log("no user");
@@ -23,7 +24,7 @@ export async function generateReportPDF({ imageFile, user, text }: any) {
     console.log("no file");
     return;
   }
-
+  console.log("basic options done..");
   doc.setFontSize(12);
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -43,7 +44,7 @@ export async function generateReportPDF({ imageFile, user, text }: any) {
     doc.text(textLines[i], margin, y);
     y += lineHeight;
   }
-
+  console.log("done with the text and doing the image...");
   // Add image after the text, preserving aspect ratio
   if (imageFile) {
     const imgData = await new Promise((resolve, reject) => {
@@ -77,10 +78,10 @@ export async function generateReportPDF({ imageFile, user, text }: any) {
 
     doc.addImage(imgData, "JPEG", margin, y, displayWidth, displayHeight);
   }
-
+  console.log("done with the image as well...");
   // Get PDF as Blob
   const pdfBlob = doc.output("blob");
   // Optionally, wrap as File for easier handling
-
+  console.log("sending back the file ....");
   return new File([pdfBlob], "report.pdf", { type: "application/pdf" });
 }

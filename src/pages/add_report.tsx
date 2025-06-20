@@ -9,6 +9,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Progress } from "@/components/ui/progress";
+
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import VoiceInput from "@/components/report/voice-input";
@@ -21,26 +34,42 @@ import { transcribeAudio } from "@/components/report/audio-to-text";
 import { describeImage } from "@/components/report/image-to-text";
 import { aiSummary, type inputProp } from "@/components/report/ai-summary";
 import { generateReportPDF } from "@/components/report/make-pdf";
+import { CreateReport } from "@/lib/report_utils";
+import { useEffect } from "react";
+import { listPersonnel } from "@/lib/personnel_utils";
 
 export default function AddReports() {
   const sites = siteStore((state) => state.sites);
   const user = useStore((state) => state.user);
+  const [personnel, setPersonnel] = useState({ id: "" });
   const [dateNTime, setDateNTime] = useState(new Date());
   const [selectedSite, setSelectedSite] = useState("");
   const [reportBody, setReportBody] = useState("");
-
+  const [progress, setProgress] = useState(10);
   const [audioDesc, setAudioDesc] = useState("");
   const [imageDesc, setImageDesc] = useState("");
   const [aiSum, setAISum] = useState("");
-
+  const [dialog, setDialog] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 
   // New state for image file and preview
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-
+  const token = useStore((state) => state.token);
   const [reportFile, setReportFile] = useState<File | null>(null);
+  const base_url = import.meta.env.VITE_BASE_URL;
+
+  useEffect(() => {
+    listPersonnel(`${base_url}api/personnel/?email=${user.email}`)
+      .then((res) => {
+        setPersonnel(res.data.personnels[0]);
+        console.log("res of persno: ", res.data.personnels[0]);
+      })
+      .catch((err) => {
+        console.log("err getting personne;:", err);
+      });
+  }, []);
 
   const handlePhotoChange = (event: any) => {
     event.preventDefault();
@@ -51,80 +80,158 @@ export default function AddReports() {
     }
   };
 
+  const sendBack = () => {
+    const formData = new FormData();
+    formData.append("generatedSummary", aiSum);
+    if (personnel.id) formData.append("personnelId", personnel.id);
+    formData.append("siteId", selectedSite);
+    if (reportFile) formData.append("pdf", reportFile);
+    if (imageFile) formData.append("image", imageFile);
+    if (audioBlob) formData.append("voice", audioBlob);
+
+    CreateReport({ data: formData, url: `${base_url}api/report/add`, token })
+      .then((res) => {
+        setProgress(100);
+        setDialog(false);
+        console.info(res);
+      })
+      .catch((error) => {
+        console.log("error!");
+        setDialog(false);
+        console.error(error);
+      });
+  };
+
+  // this useEffect is to make sure the PDF is saved and is ready to be sent to backend.
+  useEffect(() => {
+    if (reportFile) {
+      sendBack();
+    }
+  }, [reportFile]);
+
   const removeImage = (e: any) => {
     e.preventDefault();
     setImageFile(null);
     setImagePreview(null);
   };
+
   const genPDF = async () => {
+    console.info("starting the PDF, user, aiSum ");
     if (selectedSite && user && aiSum) {
-      const pdfFile = await generateReportPDF({
+      generateReportPDF({
         imageFile,
         user,
         site: selectedSite,
         text: aiSum,
-      }).then((res) => {
-        if (res) {
-          setReportFile(res);
-          // To download the PDF file
-          const url = URL.createObjectURL(res);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = "report.pdf";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-
-          // send back to the server
-        }
-      });
-      console.log("pdf file: ");
+      })
+        .then((res) => {
+          if (res) {
+            console.log("pdf done!!...");
+            setReportFile(res);
+            setProgress(98);
+            // // To download the PDF file
+            // const url = URL.createObjectURL(res);
+            // const link = document.createElement("a");
+            // link.href = url;
+            // link.download = "report.pdf";
+            // document.body.appendChild(link);
+            // link.click();
+            // document.body.removeChild(link);
+            // URL.revokeObjectURL(url);
+          }
+        })
+        .catch((err) => {
+          console.log("eror: ", err);
+          setDialog(false);
+        });
+    } else {
+      console.info("here. the site or user or aiSum is not done", selectedSite, user, aiSum);
     }
   };
 
+  // this useEffect is to make sure that aiSum is set and ready to be made a file out of it.
+  useEffect(() => {
+    console.log("aiSum is set. running the gePDF()");
+    genPDF();
+  }, [aiSum]);
+
   const handleSubmit = () => {
     if (audioBlob) {
-      transcribeAudio(audioBlob)
-        .then((response) => {
-          setAudioDesc(response);
-          console.log("audio transcripted and described ");
-          if (imageFile) {
-            describeImage(imageFile)
-              .then((res) => {
-                setImageDesc(res);
-                console.log("image summarized ");
-                if (user.email) {
-                  console.log("generating the report by AI: ");
-                  const data: inputProp = {
-                    site: selectedSite,
-                    dateNTime,
-                    reportBody,
-                    user: user.email,
-                    audioDesc,
-                    imageDesc: res,
-                  };
-                  aiSummary(data)
-                    .then((res) => {
-                      console.log("result from AI summary ");
-                      setAISum(res);
-                      // make the pdf file and send that to backend with all other parts
-                      genPDF();
-                    })
-                    .catch((error) => {
-                      console.log("error: ", error);
-                    });
-                }
-              })
-              .catch((error) => {
-                console.log("error while doing the checking for image: ", error);
-              });
-          }
-        })
-        .catch((error) => {
-          console.log("error happened while doing the audio:", error);
-          console.log("\n\n");
-        });
+      // show the progress dialog
+      setDialog(true);
+      if (user.email && imageFile) {
+        console.log("starting transcription and image description in parallel");
+
+        Promise.all([transcribeAudio(audioBlob), describeImage(imageFile)])
+          .then(([audioResult, imageResult]) => {
+            setAudioDesc(audioResult);
+            setImageDesc(imageResult);
+            setProgress(50);
+            console.log("both audio and image processed");
+
+            const data: inputProp = {
+              site: selectedSite,
+              dateNTime,
+              reportBody,
+              user: user.email!,
+              audioDesc: audioResult,
+              imageDesc: imageResult,
+            };
+
+            return aiSummary(data);
+          })
+          .then((aiResult) => {
+            setProgress(70);
+            console.log("result from AI summary ", aiResult);
+            setAISum(aiResult);
+          })
+          .catch((error) => {
+            console.log("Error in processing:", error);
+          });
+      }
+
+      // transcribeAudio(audioBlob)
+      //   .then((response) => {
+      //     setAudioDesc(response);
+      //     setProgress(30);
+      //     console.log("audio transcripted and described ");
+      //     if (imageFile) {
+      //       describeImage(imageFile)
+      //         .then((res) => {
+      //           setProgress(50);
+      //           setImageDesc(res);
+      //           console.log("image summarized ");
+      //           if (user.email) {
+      //             console.log("generating the report by AI: ");
+      //             const data: inputProp = {
+      //               site: selectedSite,
+      //               dateNTime,
+      //               reportBody,
+      //               user: user.email,
+      //               audioDesc,
+      //               imageDesc: res,
+      //             };
+      //             aiSummary(data)
+      //               .then((res) => {
+      //                 setProgress(70);
+      //                 console.log("result from AI summary ", res);
+      //                 setAISum(res);
+      //                 // continued via the useEffect.
+      //               })
+      //               .catch((error) => {
+      //                 console.log("error: ", error);
+      //               });
+      //           }
+      //         })
+      //         .catch((error) => {
+      //           console.log("error while doing the checking for image: ", error);
+      //         });
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.log("error happened while doing the audio:", error);
+      //     console.log("\n\n");
+      //   });
     }
   };
   return (
@@ -135,7 +242,7 @@ export default function AddReports() {
 
         <div className="py-2">
           <Select value={selectedSite} onValueChange={setSelectedSite}>
-            <SelectTrigger className="w-[30%]">
+            <SelectTrigger className="">
               <SelectValue placeholder="Select Site" />
             </SelectTrigger>
             <SelectContent>
@@ -143,7 +250,7 @@ export default function AddReports() {
                 <SelectLabel>Sites</SelectLabel>
                 {sites.map((site) => {
                   return (
-                    <SelectItem key={site.id} value={site.name}>
+                    <SelectItem key={site.id} value={site.id}>
                       {site.name}
                     </SelectItem>
                   );
@@ -201,6 +308,20 @@ export default function AddReports() {
           </Button>
         </div>
       </div>
+      <AlertDialog open={dialog} onOpenChange={(dialog) => setDialog(dialog)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Generating the report</AlertDialogTitle>
+            {/* <AlertDialogDescription> */}
+            <Progress value={progress} className="w-full" />
+            {/* </AlertDialogDescription> */}
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            {/* <AlertDialogCancel>Close</AlertDialogCancel>
+            <AlertDialogAction>Continue</AlertDialogAction> */}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   );
 }

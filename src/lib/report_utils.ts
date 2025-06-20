@@ -1,18 +1,17 @@
-import type { personnelType } from "@/store/personnel-store";
+import type { reportType } from "@/store/report-store";
 import axios from "axios";
 
-interface CreatePersonnelProp {
-  data: personnelType;
+interface CreateReportProp {
+  data: any;
   url: string;
   token: string;
 }
 
-export const CreatePersonnel = async ({ data, url, token }: CreatePersonnelProp) => {
+export const CreateReport = async ({ data, url, token }: CreateReportProp) => {
   try {
     const response = await axios.post(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
     });
     return response.data;
@@ -21,19 +20,7 @@ export const CreatePersonnel = async ({ data, url, token }: CreatePersonnelProp)
   }
 };
 
-export const UploadProfile = async ({ formData, url, token }: any) => {
-  try {
-    const response = await axios.post(url, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    throw error.response || "Fialed to upload";
-  }
-};
-export const editPersonnel = async ({ data, url, token }: CreatePersonnelProp) => {
+export const editReport = async ({ data, url, token }: CreateReportProp) => {
   try {
     const response = await axios.put(url, data, {
       headers: {
@@ -47,7 +34,7 @@ export const editPersonnel = async ({ data, url, token }: CreatePersonnelProp) =
   }
 };
 
-export const removePersonnel = async (token: string, url: string) => {
+export const removeReport = async (token: string, url: string) => {
   try {
     const sites = await axios.delete(url, {
       headers: {
@@ -61,11 +48,11 @@ export const removePersonnel = async (token: string, url: string) => {
   }
 };
 
-export const listPersonnel = async (url: string) => {
+export const listReport = async (url: string) => {
   try {
-    const personnels = await axios.get(url);
-    return personnels;
+    const sites = await axios.get(url);
+    return sites;
   } catch (error: any) {
-    throw error.response?.data?.message || "Failed to list personnels.";
+    throw error.response?.data?.message || "Failed to list sites.";
   }
 };

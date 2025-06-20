@@ -111,7 +111,6 @@ export function ImageCropper({
         UploadProfile({ url: url1, formData, token })
           .then((res) => {
             updatePersonnel(res.personnel);
-
             toast("Personnel Registered", {
               description: "Personnel has been registered.",
               action: {
