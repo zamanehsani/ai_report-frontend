@@ -189,49 +189,6 @@ export default function AddReports() {
             console.log("Error in processing:", error);
           });
       }
-
-      // transcribeAudio(audioBlob)
-      //   .then((response) => {
-      //     setAudioDesc(response);
-      //     setProgress(30);
-      //     console.log("audio transcripted and described ");
-      //     if (imageFile) {
-      //       describeImage(imageFile)
-      //         .then((res) => {
-      //           setProgress(50);
-      //           setImageDesc(res);
-      //           console.log("image summarized ");
-      //           if (user.email) {
-      //             console.log("generating the report by AI: ");
-      //             const data: inputProp = {
-      //               site: selectedSite,
-      //               dateNTime,
-      //               reportBody,
-      //               user: user.email,
-      //               audioDesc,
-      //               imageDesc: res,
-      //             };
-      //             aiSummary(data)
-      //               .then((res) => {
-      //                 setProgress(70);
-      //                 console.log("result from AI summary ", res);
-      //                 setAISum(res);
-      //                 // continued via the useEffect.
-      //               })
-      //               .catch((error) => {
-      //                 console.log("error: ", error);
-      //               });
-      //           }
-      //         })
-      //         .catch((error) => {
-      //           console.log("error while doing the checking for image: ", error);
-      //         });
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.log("error happened while doing the audio:", error);
-      //     console.log("\n\n");
-      //   });
     }
   };
   return (
