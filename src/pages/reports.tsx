@@ -60,16 +60,18 @@ export default function Reports() {
     console.log("params: ", params);
     listReport(`${base_url}api/report/`, params)
       .then((res) => {
-        console.log("lists of reports", res.data);
+        console.log("reports", res.data);
         setReport(res.data.reports);
       })
       .catch((err) => console.log("err: ", err));
   };
 
   useEffect(() => {
-    getReports();
-    console.log("listing the reports");
-  }, []);
+    if (user && user.id && user.id.length >= 1) {
+      getReports();
+      console.log("listing the reports");
+    }
+  }, [user]);
 
   const hadleFilter = () => {
     getReports();
@@ -79,11 +81,14 @@ export default function Reports() {
       <div className="container px-0 md:px-8">
         {/* the filter, comes here. */}
         <div className="border-b-1 pb-2 flex flex-col md:flex-row items-center-safe justify-center gap-4 ">
-          <Button asChild variant={"outline"}>
-            <Link to="add-report">
-              <Plus />
-            </Link>
-          </Button>
+          {user && user.userType === "personnel" && (
+            <Button asChild variant={"outline"}>
+              <Link to="add-report">
+                <Plus />
+              </Link>
+            </Button>
+          )}
+
           <div className=" sm:w-[70%] md:w-fit">
             <Command className="overflow-visible " id="selectSite">
               <div className="rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">

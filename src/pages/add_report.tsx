@@ -83,7 +83,7 @@ export default function AddReports() {
   const sendBack = () => {
     const formData = new FormData();
     formData.append("generatedSummary", aiSum);
-    if (personnel.id) formData.append("personnelId", personnel.id);
+    if (user.id) formData.append("userId", user.id);
     formData.append("siteId", selectedSite);
     if (reportFile) formData.append("pdf", reportFile);
     if (imageFile) formData.append("image", imageFile);

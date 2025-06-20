@@ -11,7 +11,7 @@ export default function AReport({ item }: { item: any }) {
     minute: "2-digit",
     hour12: false, // use `true` if you want AM/PM format
   };
-
+  console.log;
   return (
     <div className="flex items-center gap-4 px-4 py-2 border rounded-lg my-1">
       <div className="flex flex-col gap-1">
@@ -21,6 +21,7 @@ export default function AReport({ item }: { item: any }) {
         <p className="text-sm text-muted-foreground">{item.category}</p>
       </div>
       <img src={`${base_url.replace(/\/$/, "")}${item.image}`} width={40} className="border" />
+      <p>{item.siteId}</p>
       <Button variant="outline" asChild>
         <Link
           target="__blank"
