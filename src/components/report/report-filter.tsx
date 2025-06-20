@@ -9,9 +9,15 @@ import { Input } from "@/components/ui/input";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-export function DateTimePicker() {
+interface DateTimePickerProps {
+  date: Date | undefined;
+  setDate: (date: Date | undefined) => void;
+  time: string;
+  setTime: (time: string) => void;
+}
+
+export function DateTimePicker({ date, setDate, time, setTime }: DateTimePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
 
   return (
     <div className="flex gap-4 ">
@@ -28,8 +34,8 @@ export function DateTimePicker() {
               mode="single"
               selected={date}
               captionLayout="dropdown"
-              onSelect={(date) => {
-                setDate(date);
+              onSelect={(selectedDate) => {
+                setDate(selectedDate ?? undefined);
                 setOpen(false);
               }}
             />
@@ -37,12 +43,10 @@ export function DateTimePicker() {
         </Popover>
       </div>
       <div className="flex flex-col gap-3">
-        {/* <Label htmlFor="time" className="px-1">
-          Time
-        </Label> */}
         <Input
           type="time"
           id="time"
+          onChange={(e) => setTime(e.target.value)}
           step="1"
           defaultValue="10:30:00"
           className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"

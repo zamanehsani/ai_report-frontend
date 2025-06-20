@@ -33,7 +33,7 @@ export default function EditUser({ user }: { user: userType }) {
 
   const base_url = import.meta.env.VITE_BASE_URL || "/";
   const token = useStore((state) => state.token);
-  const updateUsers = useStore((state) => state.updateUsers);
+  const updateUser = useStore((state) => state.updateUser);
 
   // Handler for editing a site (for now, just a placeholder)
   const handleEditClient = (e: any) => {
@@ -52,7 +52,7 @@ export default function EditUser({ user }: { user: userType }) {
 
     editUser({ data: data, url, token })
       .then((res) => {
-        updateUsers(res.user);
+        updateUser(res.user);
         console.log("res: ", res);
         toast("Client Update", {
           description: res?.message,

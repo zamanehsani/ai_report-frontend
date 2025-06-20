@@ -28,6 +28,9 @@ export default function Reports() {
   const [inputValue, setInputValue] = useState("");
   const setReport = reportStore((state) => state.setReport);
   const reports = reportStore((state) => state.reports);
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [time, setTime] = useState("");
+  const user = useStore((state) => state.user);
 
   const handleUnselect = useCallback((site: siteType) => {
     setSelectedSites((prev: any) => prev.filter((s: any) => s.id !== site.id));
@@ -48,9 +51,16 @@ export default function Reports() {
   );
 
   const getReports = () => {
-    listReport(`${base_url}api/report/`)
+    const params = {
+      sites: selectedSites.map((site: any) => site.id),
+      date: date,
+      time: time,
+      user_email: user.email,
+    };
+    console.log("params: ", params);
+    listReport(`${base_url}api/report/`, params)
       .then((res) => {
-        console.log(res.data.reports);
+        console.log("lists of reports", res.data);
         setReport(res.data.reports);
       })
       .catch((err) => console.log("err: ", err));
@@ -61,6 +71,9 @@ export default function Reports() {
     console.log("listing the reports");
   }, []);
 
+  const hadleFilter = () => {
+    getReports();
+  };
   return (
     <section className="py-6">
       <div className="container px-0 md:px-8">
@@ -132,8 +145,8 @@ export default function Reports() {
             </Command>
           </div>
 
-          <DateTimePicker />
-          <Button>
+          <DateTimePicker date={date} setDate={setDate} time={time} setTime={setTime} />
+          <Button onClick={hadleFilter}>
             <Send />
           </Button>
         </div>

@@ -48,9 +48,10 @@ export const removeReport = async (token: string, url: string) => {
   }
 };
 
-export const listReport = async (url: string) => {
+export const listReport = async (url: string, params: any = {}) => {
   try {
-    const sites = await axios.get(url);
+    console.log("the params in util func: ", params);
+    const sites = await axios.get(url, { params });
     return sites;
   } catch (error: any) {
     throw error.response?.data?.message || "Failed to list sites.";
