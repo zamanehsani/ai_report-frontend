@@ -39,7 +39,6 @@ export const editUser = async ({ data, url, token }: CreateUserProp) => {
     const response = await axios.put(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
     });
     return response.data;

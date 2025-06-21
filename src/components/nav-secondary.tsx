@@ -21,14 +21,14 @@ export function NavSecondary({
     icon: Icon;
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-  const authenticate = useStore((state: any) => state.authenticate);
+  const logout = useStore((state: any) => state.logout);
 
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild onClick={() => authenticate(false)}>
+            <SidebarMenuButton asChild onClick={() => logout()}>
               <a href="#">
                 <IconLogout />
                 <span className="">Logout</span>

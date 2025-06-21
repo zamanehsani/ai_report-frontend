@@ -25,6 +25,9 @@ export default function EditUser({ user }: { user: userType }) {
   const [last_name, setLast_name] = useState(user.lastName);
   const [email, setEmail] = useState(user.email);
   const [phone, setPhone] = useState(user.phone);
+  const [secondary_name, setSecondaryName] = useState(user.secondary_name);
+  const [secondary_email, setSecondaryEmail] = useState(user.secondary_email);
+  const [secondary_phone, setSecondaryPhone] = useState(user.secondary_phone);
   const [isActive, setIsActive] = useState(user.isActive);
   const [userType, setUserTyp] = useState(user.userType);
   const [address, setAddress] = useState(user.address);
@@ -33,10 +36,10 @@ export default function EditUser({ user }: { user: userType }) {
 
   const base_url = import.meta.env.VITE_BASE_URL || "/";
   const token = useStore((state) => state.token);
-  const updateUser = useStore((state) => state.updateUser);
+  const updateUsers = useStore((state) => state.updateUsers);
 
   // Handler for editing a site (for now, just a placeholder)
-  const handleEditClient = (e: any) => {
+  const handleEditUser = (e: any) => {
     e.preventDefault();
     const url = `${base_url}api/admin/${user.id}`;
     const data = {
@@ -48,11 +51,14 @@ export default function EditUser({ user }: { user: userType }) {
       address,
       isActive,
       userType,
+      secondary_email,
+      secondary_name,
+      secondary_phone,
     };
 
     editUser({ data: data, url, token })
       .then((res) => {
-        updateUser(res.user);
+        updateUsers(res.user);
         console.log("res: ", res);
         toast("Client Update", {
           description: res?.message,
@@ -82,7 +88,7 @@ export default function EditUser({ user }: { user: userType }) {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <form onSubmit={(e) => handleEditClient(e)}>
+        <form onSubmit={(e) => handleEditUser(e)}>
           <DialogHeader>
             <DialogTitle>Update User</DialogTitle>
             <DialogDescription>Please enter any changes here and hit Save.</DialogDescription>
@@ -117,6 +123,38 @@ export default function EditUser({ user }: { user: userType }) {
                   type="text"
                   placeholder="ABC LLC CO"
                   defaultValue={last_name}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="grid gap-1">
+                <Label htmlFor="secondary_email">Emergency Contact</Label>
+                <Input
+                  id="secondary_email"
+                  onChange={(e: any) => setSecondaryEmail(e.target.value)}
+                  type="email"
+                  placeholder="abc@gmail.com"
+                  defaultValue={secondary_email}
+                />
+              </div>
+              <div className="grid gap-1">
+                <Label htmlFor="secondary_phone">Emergency Phone</Label>
+                <Input
+                  id="secondary_phone"
+                  onChange={(e: any) => setSecondaryPhone(e.target.value)}
+                  type="text"
+                  placeholder="+123454343"
+                  defaultValue={secondary_phone}
+                />
+              </div>
+              <div className="grid gap-1">
+                <Label htmlFor="scondary_name">Emergency Name</Label>
+                <Input
+                  id="scondary_name"
+                  onChange={(e: any) => setSecondaryName(e.target.value)}
+                  type="text"
+                  placeholder="Mohammad"
+                  defaultValue={secondary_name}
                 />
               </div>
             </div>

@@ -44,7 +44,6 @@ export default function UserTable() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("cheking if the user can access this page...");
     if (user && user.userType !== "admin") {
       console.log("user is not admin and redirecting back to dashabord");
       navigate("/dashboard", { replace: true });
@@ -135,7 +134,7 @@ export default function UserTable() {
                 <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead> User Type</TableHead>
-                <TableHead>Address</TableHead>
+
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -149,7 +148,7 @@ export default function UserTable() {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.phone}</TableCell>
                   <TableCell>{user.userType}</TableCell>
-                  <TableCell>{user.address}</TableCell>
+
                   <TableCell>
                     <div className="flex flex-wrap max-w-[12rem] gap-2">
                       <Badge

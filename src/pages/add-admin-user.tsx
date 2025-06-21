@@ -66,7 +66,7 @@ export default function AddAdminUser() {
       .then((res) => {
         // set user list
         addUsers(res.user);
-        console.log("res", res);
+
         toast("user Registered", {
           description: res.message,
           action: {

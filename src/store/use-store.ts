@@ -11,6 +11,9 @@ export interface userType {
   address?: string;
   photoUrl?: string;
   isActive?: boolean;
+  secondary_name?: string;
+  secondary_phone?: string;
+  secondary_email?: string;
   userType?: string;
 }
 
