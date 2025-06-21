@@ -28,6 +28,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { editUser } from "@/lib/user_admin_utils";
 import { useNavigate } from "react-router";
+import PasswordUser from "./password_user";
 
 export default function UserTable() {
   const setUsers = useStore((state) => state.setUsers);
@@ -163,6 +164,7 @@ export default function UserTable() {
                   <TableCell>
                     {user.id === auth_user.id ? null : (
                       <>
+                        <PasswordUser user={user} />
                         <EditUser source="default" user={user} />
                         {user.id && <RemoveUser id={user.id} />}
                       </>
