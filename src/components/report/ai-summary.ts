@@ -25,9 +25,9 @@ export async function aiSummary({
   \nsite (name of a place): ${site}
   date and time: ${dateNTime}
   Personnel email: ${user}
-  Personnel description: ${reportBody}
-  image description of the situation or place: ${imageDesc}
-  audio recording of the personnel of the place/situation: ${audioDesc}.
+  Personnel report description: ${reportBody}
+  Image description of the situation or place: ${imageDesc}
+  Audio recording of the personnel of the place/situation: ${audioDesc}.
 `;
 
   const response = await ai.models.generateContent({

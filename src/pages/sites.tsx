@@ -19,6 +19,7 @@ import { useNavigate } from "react-router";
 
 import { Activity } from "lucide-react";
 import { listUser } from "@/lib/user_admin_utils";
+
 export default function Sites() {
   const setSites = siteStore((state) => state.setSites);
   const updateSite = siteStore((state) => state.updateSite);
@@ -29,7 +30,7 @@ export default function Sites() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(8);
   const [totalPages, setTotalPages] = useState(1); // Add totalPages state
   const base_url = import.meta.env.VITE_BASE_URL || "/";
 
@@ -61,11 +62,15 @@ export default function Sites() {
 
   useEffect(() => {
     setLoading(true);
-
-    listSites(`${base_url}api/site/?page=${page}&pageSize=${pageSize}`)
+    const params = {
+      user: user.id,
+    };
+    console.log("user: ", user);
+    listSites(`${base_url}api/site/?page=${page}&pageSize=${pageSize}`, params)
       .then((res: any) => {
         // Assuming API returns total count of sites
         setSites(res.data.sites);
+        console.log("sites:", res.data.sites);
         setTotalPages(Math.ceil(res.data.total / pageSize) || 1); // Set total pages from API
         setLoading(false);
       })
@@ -157,7 +162,7 @@ export default function Sites() {
   return (
     <div className="flex flex-col px-3 h-full">
       <div className="flex justify-end sticky top-0 z-10 bg-white dark:bg-background py-2">
-        <NewSite />
+        {user.userType === "admin" && <NewSite />}
       </div>
 
       <div className=" *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @6xl/main:grid-cols-3 overflow-y-auto max-h-[80vh] py-3">

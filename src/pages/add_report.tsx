@@ -60,16 +60,16 @@ export default function AddReports() {
   const [reportFile, setReportFile] = useState<File | null>(null);
   const base_url = import.meta.env.VITE_BASE_URL;
 
-  useEffect(() => {
-    listPersonnel(`${base_url}api/personnel/?email=${user.email}`)
-      .then((res) => {
-        setPersonnel(res.data.personnels[0]);
-        console.log("res of persno: ", res.data.personnels[0]);
-      })
-      .catch((err) => {
-        console.log("err getting personne;:", err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   listPersonnel(`${base_url}api/personnel/?email=${user.email}`)
+  //     .then((res) => {
+  //       setPersonnel(res.data.personnels[0]);
+  //       console.log("res of persno: ", res.data.personnels[0]);
+  //     })
+  //     .catch((err) => {
+  //       console.log("err getting personne;:", err);
+  //     });
+  // }, []);
 
   const handlePhotoChange = (event: any) => {
     event.preventDefault();
@@ -83,7 +83,7 @@ export default function AddReports() {
   const sendBack = () => {
     const formData = new FormData();
     formData.append("generatedSummary", aiSum);
-    if (user.id) formData.append("userId", user.id);
+    if (user.id) formData.append("personnelId", user.id);
     formData.append("siteId", selectedSite);
     if (reportFile) formData.append("pdf", reportFile);
     if (imageFile) formData.append("image", imageFile);
@@ -207,7 +207,7 @@ export default function AddReports() {
                 <SelectLabel>Sites</SelectLabel>
                 {sites.map((site) => {
                   return (
-                    <SelectItem key={site.id} value={site.id}>
+                    <SelectItem key={site.id ?? ""} value={site.id ?? ""}>
                       {site.name}
                     </SelectItem>
                   );

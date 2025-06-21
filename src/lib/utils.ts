@@ -51,9 +51,9 @@ export const removeSite = async (token: string, url: string) => {
   }
 };
 
-export const listSites = async (url: string) => {
+export const listSites = async (url: string, params?: Record<string, any>) => {
   try {
-    const sites = await axios.get(url);
+    const sites = await axios.get(url, params ? { params } : undefined);
     return sites;
   } catch (error: any) {
     throw error.response?.data?.message || "Failed to list sites.";

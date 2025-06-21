@@ -43,15 +43,18 @@ export default function Reports() {
   );
 
   useEffect(() => {
-    console.log("getting the sites: ...");
-    listSites(`${base_url}api/site/`)
+    const params = {
+      user: user.id,
+    };
+
+    listSites(`${base_url}api/site/`, params)
       .then((res) => {
         setSites(res.data.sites);
       })
       .catch((err) => {
         console.log("err while getting sites", err);
       });
-  }, []);
+  }, [user]);
 
   const filteredSites = useMemo(
     () => sites.filter((site) => !selectedSites.includes(site)),
