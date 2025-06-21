@@ -48,12 +48,16 @@ export const removeReport = async (token: string, url: string) => {
   }
 };
 
-export const listReport = async (url: string, params: any = {}) => {
-  try {
-    console.log("the params in util func: ", params);
-    const sites = await axios.get(url, { params });
-    return sites;
-  } catch (error: any) {
-    throw error.response?.data?.message || "Failed to list sites.";
+export async function listReport(url: string, params: any) {
+  const searchParams = new URLSearchParams();
+  if (params.sites && params.sites.length > 0) {
+    params.sites.forEach((id: string) => searchParams.append("sites", id));
   }
-};
+  if (params.date)
+    searchParams.append("date", params.date.toISOString ? params.date.toISOString() : params.date);
+  if (params.time) searchParams.append("time", params.time);
+  if (params.user_email) searchParams.append("user_email", params.user_email);
+
+  const response = await fetch(`${url}?${searchParams.toString()}`);
+  return response.json();
+}

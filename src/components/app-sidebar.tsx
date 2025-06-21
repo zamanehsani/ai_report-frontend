@@ -40,11 +40,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   if (user?.userType === "client") {
     navMain = [
       {
-        title: "Clients",
-        url: "./clients",
-        icon: IconUsers,
-      },
-      {
         title: "Reports",
         url: "./",
         icon: IconFolder,

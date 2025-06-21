@@ -1,10 +1,7 @@
 import { Button } from "@/components/ui/button";
 
 import { DateTimePicker } from "@/components/report/report-filter";
-
-import { Label } from "@/components/ui/label";
-
-import { Edit, X, Plus, Send, Satellite } from "lucide-react";
+import { X, Plus, Send, Activity } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -12,18 +9,18 @@ import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui
 import { Command as CommandPrimitive } from "cmdk";
 import { useCallback, useMemo } from "react";
 import { type siteType, siteStore } from "@/store/site-store";
-
 import { useStore } from "@/store/use-store";
-import { toast } from "sonner";
 import { Link } from "react-router";
 import AReport from "@/components/report/report-item";
 import { listReport } from "@/lib/report_utils";
 import { reportStore, type reportType } from "@/store/report-store";
+import { listSites } from "@/lib/utils";
 
 export default function Reports() {
   const [open, setOpen] = useState(false);
   const base_url = import.meta.env.VITE_BASE_URL;
   const sites = siteStore((state) => state.sites);
+  const setSites = siteStore((state) => state.setSites);
   const [selectedSites, setSelectedSites] = useState<any>([]);
   const [inputValue, setInputValue] = useState("");
   const setReport = reportStore((state) => state.setReport);
@@ -45,6 +42,17 @@ export default function Reports() {
     [selectedSites]
   );
 
+  useEffect(() => {
+    console.log("getting the sites: ...");
+    listSites(`${base_url}api/site/`)
+      .then((res) => {
+        setSites(res.data.sites);
+      })
+      .catch((err) => {
+        console.log("err while getting sites", err);
+      });
+  }, []);
+
   const filteredSites = useMemo(
     () => sites.filter((site) => !selectedSites.includes(site)),
     [selectedSites]
@@ -57,11 +65,12 @@ export default function Reports() {
       time: time,
       user_email: user.email,
     };
-    console.log("params: ", params);
+    // console.log("params: ", params);
+    // console.log("sites:", sites);
     listReport(`${base_url}api/report/`, params)
       .then((res) => {
-        console.log("reports", res.data);
-        setReport(res.data.reports);
+        console.log("reports", res.reports);
+        setReport(res.reports);
       })
       .catch((err) => console.log("err: ", err));
   };
@@ -151,12 +160,18 @@ export default function Reports() {
           </div>
 
           <DateTimePicker date={date} setDate={setDate} time={time} setTime={setTime} />
-          <Button onClick={hadleFilter}>
+          <Button className="cursor-pointer" onClick={hadleFilter}>
             <Send />
           </Button>
         </div>
 
         <div className="flex flex-col max-w-screen-sm  mx-auto mt-5">
+          {reports.length < 1 && (
+            <div className="flex flex-col pt-5 gap-4 items-center justify-center">
+              <Activity size={60} />
+              <p>No report to show</p>
+            </div>
+          )}
           {reports.map((item: reportType, index: number) => (
             <AReport item={item} key={index} />
           ))}

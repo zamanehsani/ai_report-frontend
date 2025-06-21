@@ -8,7 +8,7 @@ export default function Clients() {
   const user = useStore((state) => state.user);
 
   useEffect(() => {
-    if (user && user.userType === "personnel") {
+    if ((user && user.userType === "personnel") || user.userType === "client") {
       console.log("you do not have access to this page. ");
       navigate("/dashboard", { replace: true });
     }
