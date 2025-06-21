@@ -24,8 +24,11 @@ export default function AddAdminUser() {
   const [userType, setUserType] = useState("");
   const [email, setEmail] = useState("");
   const [first_name, setFirst_name] = useState("");
-  const [last_name, setLast_name] = useState("");
   const [middle_name, setMiddle_name] = useState("");
+  const [last_name, setLast_name] = useState("");
+  const [secondary_name, setSecondary_name] = useState("");
+  const [secondary_phone, setSecondary_phone] = useState("");
+  const [secondary_email, setSecondary_email] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [address, setAddress] = useState("");
@@ -53,6 +56,9 @@ export default function AddAdminUser() {
       userType,
       note,
       password,
+      secondary_email,
+      secondary_name,
+      secondary_phone,
     };
 
     const base_url = import.meta.env.VITE_BASE_URL;
@@ -60,6 +66,7 @@ export default function AddAdminUser() {
       .then((res) => {
         // set user list
         addUsers(res.user);
+        console.log("res", res);
         toast("user Registered", {
           description: res.message,
           action: {
@@ -150,6 +157,41 @@ export default function AddAdminUser() {
             />
           </div>
         </div>
+        <div className="grid grid-cols-3 gap-2 my-3 py-3">
+          <div>
+            <Label htmlFor="secondary_phone" className="pb-1">
+              Emergency Phone
+            </Label>
+            <Input
+              id="secondary_phone"
+              onChange={(e: any) => setSecondary_phone(e.target.value)}
+              type="text"
+              placeholder="+14567433456"
+            />
+          </div>
+          <div>
+            <Label htmlFor="secondary_email" className="pb-1">
+              Emergency Email
+            </Label>
+            <Input
+              id="secondary_email"
+              onChange={(e: any) => setSecondary_email(e.target.value)}
+              type="email"
+              placeholder="inf@gmail.com"
+            />
+          </div>
+          <div>
+            <Label htmlFor="secondary_name" className="pb-1">
+              Emergency Name
+            </Label>
+            <Input
+              id="secondary_name"
+              onChange={(e: any) => setSecondary_name(e.target.value)}
+              type="text"
+              placeholder="Mohammad Sattar"
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-1 gap-2 my-3 py-3">
           <div>
             <Label htmlFor="address" className="pb-1">
@@ -214,7 +256,7 @@ export default function AddAdminUser() {
 
         <div className="flex justify-center  mt-4">
           <Button onClick={handleSubmit}>
-            <Send className="" /> Save Report
+            <Send className="" /> Register User
           </Button>
         </div>
       </div>

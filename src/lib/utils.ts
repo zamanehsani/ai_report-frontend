@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import axios from "axios";
+import type { userType } from "@/store/use-store";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -8,10 +9,11 @@ export function cn(...inputs: ClassValue[]) {
 
 interface CreateSiteProp {
   data: {
-    name: string;
-    address: string;
-    location: string;
-    isActive: boolean;
+    name?: string;
+    address?: string;
+    location?: string;
+    isActive?: boolean;
+    client?: userType;
     id?: string;
   };
   url: string;
@@ -22,7 +24,6 @@ export const CreateSite = async ({ data, url, token }: CreateSiteProp) => {
     const response = await axios.post(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
     });
     return response.data;
@@ -36,7 +37,6 @@ export const editSite = async ({ data, url, token }: CreateSiteProp) => {
     const response = await axios.put(url, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
     });
     return response.data;
@@ -50,7 +50,6 @@ export const removeSite = async (token: string, url: string) => {
     const sites = await axios.delete(url, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
     });
     return sites;

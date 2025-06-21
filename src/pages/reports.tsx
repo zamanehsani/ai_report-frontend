@@ -65,8 +65,7 @@ export default function Reports() {
       time: time,
       user_email: user.email,
     };
-    // console.log("params: ", params);
-    // console.log("sites:", sites);
+
     listReport(`${base_url}api/report/`, params)
       .then((res) => {
         console.log("reports", res.reports);

@@ -62,9 +62,10 @@ export const removeUser = async (token: string, url: string) => {
   }
 };
 
-export const listUser = async (url: string) => {
+export const listUser = async (url: string, params?: Record<string, any>) => {
   try {
-    const users = await axios.get(url);
+    console.log("user params", params);
+    const users = await axios.get(url, params ? { params } : undefined);
     return users;
   } catch (error: any) {
     throw error.response?.data?.message || "Failed to list sites.";
