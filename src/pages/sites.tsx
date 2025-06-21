@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useStore } from "@/store/use-store";
+import { useStore, type userType } from "@/store/use-store";
 import { siteStore, type siteType } from "@/store/site-store";
 import { listSites, removeSite, editSite } from "@/lib/utils";
 import SiteItemCard from "@/components/site/site_item_card";
@@ -18,23 +18,39 @@ import {
 import { useNavigate } from "react-router";
 
 import { Activity } from "lucide-react";
+import { listUser } from "@/lib/user_admin_utils";
 export default function Sites() {
   const setSites = siteStore((state) => state.setSites);
   const updateSite = siteStore((state) => state.updateSite);
   const deleteSite = siteStore((state) => state.deleteSite);
+  const token = useStore((state) => state.token);
+  const sites = siteStore((state) => state.sites);
+  const user = useStore((state) => state.user);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(12);
   const [totalPages, setTotalPages] = useState(1); // Add totalPages state
-
-  const token = useStore((state) => state.token);
-  const sites = siteStore((state) => state.sites);
-
   const base_url = import.meta.env.VITE_BASE_URL || "/";
 
   const navigate = useNavigate();
-  const user = useStore((state) => state.user);
+
+  const [clientList, setClientList] = useState<userType[]>([]);
+  const [personnelList, setPersonnelList] = useState<userType[]>([]);
+
+  useEffect(() => {
+    const url = `${base_url}api/admin/list`;
+    listUser(url)
+      .then((res) => {
+        const clients = res.data.users.filter((user: userType) => user.userType === "client");
+        const personnels = res.data.users.filter((user: userType) => user.userType === "personnel");
+        setClientList(clients);
+        setPersonnelList(personnels);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   useEffect(() => {
     if (user && user.userType === "personnel") {
@@ -114,6 +130,7 @@ export default function Sites() {
   // Handler for editing a site (for now, just a placeholder)
   const handleEditSite = (site: siteType) => {
     // send to the backend and on ok, update the list here as well.
+    console.log("new site: ", site);
     const url = `${base_url}api/site/${site.id}`;
     editSite({ data: site, url, token })
       .then((res) => {
@@ -158,6 +175,8 @@ export default function Sites() {
             <SiteItemCard
               key={site.id}
               site={site}
+              clientList={clientList}
+              personnelList={personnelList}
               onEdit={handleEditSite}
               onRemove={handleRemoveSite}
             />

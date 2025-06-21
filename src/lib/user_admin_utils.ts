@@ -64,7 +64,6 @@ export const removeUser = async (token: string, url: string) => {
 
 export const listUser = async (url: string, params?: Record<string, any>) => {
   try {
-    console.log("user params", params);
     const users = await axios.get(url, params ? { params } : undefined);
     return users;
   } catch (error: any) {
