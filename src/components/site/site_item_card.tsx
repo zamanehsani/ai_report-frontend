@@ -13,20 +13,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { type siteType } from "@/store/site-store";
 import { useState } from "react";
-import { clientStore } from "@/store/client-store";
+import type { userType } from "@/store/use-store";
 
 export default function SiteItemCard({
   site,
@@ -37,11 +29,10 @@ export default function SiteItemCard({
   onEdit: (site: siteType) => void;
   onRemove: (id: string) => void;
 }) {
-  const clientsList = clientStore((state) => state.clients);
   const [name, setName] = useState(site.name);
   const [address, setAddress] = useState(site.address);
   const [location, setLocation] = useState(site.location);
-  const [clientId, setClientId] = useState("");
+
   return (
     <Card key={site.id} className="w-full gap-0 py-0">
       <CardHeader className="flex flex-row items-center py-2 justify-between ">
@@ -90,6 +81,19 @@ export default function SiteItemCard({
           <span className="text-xs font-light text-muted-foreground leading-tight">
             {site.address}
           </span>
+
+          <p>clients:</p>
+          {site.clients?.map((cl: userType) => (
+            <span key={cl.id} className="border px-1 ">
+              {cl.email}
+            </span>
+          ))}
+          <p>personnels:</p>
+          {site.personnels?.map((cl: userType) => (
+            <span key={cl.id} className="border px-1 ">
+              {cl.email}
+            </span>
+          ))}
         </div>
       </CardContent>
       <Separator />
@@ -122,30 +126,6 @@ export default function SiteItemCard({
                       value={name}
                       placeholder="SN002"
                     />
-                  </div>
-                  <div className="grid gap-1">
-                    <Label htmlFor="selectSite">Select Client</Label>
-                    <Select
-                      onValueChange={(value) => {
-                        setClientId(value);
-                      }}
-                      // @ts-ignore
-                      defaultValue={site?.clients[0]?.id}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Client" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>clients</SelectLabel>
-                          {clientsList &&
-                            clientsList.map((clnt) => (
-                              <SelectItem key={clnt.id ?? ""} value={clnt.id ?? ""}>
-                                {clnt.officialName}
-                              </SelectItem>
-                            ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
                   </div>
                 </div>
 
@@ -184,7 +164,6 @@ export default function SiteItemCard({
                       name,
                       address,
                       location,
-                      clients: [clientId],
                     })
                   }
                   type="submit">

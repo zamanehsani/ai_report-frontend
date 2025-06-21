@@ -1,14 +1,15 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import type { reportType } from "./report-store";
-import type { clientType } from "./client-store";
+import type { userType } from "./use-store";
 
 export interface siteType {
   id: string;
   name: string;
   address?: string;
   location?: string;
-  clients?: clientType[];
+  clients?: userType[];
+  personnels?: userType[];
   isActive?: boolean;
   reports?: reportType[];
 }

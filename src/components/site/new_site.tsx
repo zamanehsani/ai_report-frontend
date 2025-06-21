@@ -47,17 +47,11 @@ export default function NewSite() {
   const [personnelList, setPersonnelList] = useState<userType[]>([]);
 
   useEffect(() => {
-    console.log("listing the user of clients");
     const url = `${base_url}api/admin/list`;
-
-    // Pass userType as a filter param
     listUser(url)
       .then((res) => {
-        console.log("res: ", res);
         const clients = res.data.users.filter((user: userType) => user.userType === "client");
         const personnels = res.data.users.filter((user: userType) => user.userType === "personnel");
-        console.log("personnel:", personnels);
-        console.log("clients:", clients);
         setClientList(clients);
         setPersonnelList(personnels);
       })

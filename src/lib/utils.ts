@@ -1,21 +1,14 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import axios from "axios";
-import type { userType } from "@/store/use-store";
+import type { siteType } from "@/store/site-store";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 interface CreateSiteProp {
-  data: {
-    name?: string;
-    address?: string;
-    location?: string;
-    isActive?: boolean;
-    client?: userType;
-    id?: string;
-  };
+  data: siteType;
   url: string;
   token: string;
 }
