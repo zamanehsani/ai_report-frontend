@@ -40,7 +40,7 @@ export default function UserTable() {
   const base_url = import.meta.env.VITE_BASE_URL || "/";
   const token = useStore((state) => state.token);
   const user = useStore((state) => state.user);
-
+  const auth_user = user;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -134,7 +134,6 @@ export default function UserTable() {
                 <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead> User Type</TableHead>
-
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -150,18 +149,24 @@ export default function UserTable() {
                   <TableCell>{user.userType}</TableCell>
 
                   <TableCell>
-                    <div className="flex flex-wrap max-w-[12rem] gap-2">
-                      <Badge
-                        onClick={() => handleStatusChange(user)}
-                        className="p-1 px-2 hover:bg-muted"
-                        variant={"outline"}>
-                        {user.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </div>
+                    {user.id === auth_user.id ? null : (
+                      <div className="flex flex-wrap max-w-[12rem] gap-2">
+                        <Badge
+                          onClick={() => handleStatusChange(user)}
+                          className="p-1 px-2 hover:bg-muted"
+                          variant={"outline"}>
+                          {user.isActive ? "Active" : "Inactive"}
+                        </Badge>
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell>
-                    <EditUser user={user} />
-                    {user.id && <RemoveUser id={user.id} />}
+                    {user.id === auth_user.id ? null : (
+                      <>
+                        <EditUser source="default" user={user} />
+                        {user.id && <RemoveUser id={user.id} />}
+                      </>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -170,70 +175,72 @@ export default function UserTable() {
         )}
       </div>
       <div className="flex justify-center py-2  mt-auto">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                size="default"
-                href="#"
-                onClick={() => handlePageChange(page - 1)}
-                aria-disabled={page === 1}
-                className={page === 1 ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-            {getPageNumbers()[0] > 1 && (
-              <>
-                <PaginationItem>
-                  <PaginationLink size="default" href="#" onClick={() => handlePageChange(1)}>
-                    1
-                  </PaginationLink>
-                </PaginationItem>
-                {getPageNumbers()[0] > 2 && (
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                )}
-              </>
-            )}
-            {getPageNumbers().map((num) => (
-              <PaginationItem key={num}>
-                <PaginationLink
+        {users.length > 9 && (
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
                   size="default"
                   href="#"
-                  onClick={() => handlePageChange(num)}
-                  isActive={num === page}>
-                  {num}
-                </PaginationLink>
+                  onClick={() => handlePageChange(page - 1)}
+                  aria-disabled={page === 1}
+                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                />
               </PaginationItem>
-            ))}
-            {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
-              <>
-                {getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1 && (
+              {getPageNumbers()[0] > 1 && (
+                <>
                   <PaginationItem>
-                    <PaginationEllipsis />
+                    <PaginationLink size="default" href="#" onClick={() => handlePageChange(1)}>
+                      1
+                    </PaginationLink>
                   </PaginationItem>
-                )}
-                <PaginationItem>
+                  {getPageNumbers()[0] > 2 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+                </>
+              )}
+              {getPageNumbers().map((num) => (
+                <PaginationItem key={num}>
                   <PaginationLink
                     size="default"
                     href="#"
-                    onClick={() => handlePageChange(totalPages)}>
-                    {totalPages}
+                    onClick={() => handlePageChange(num)}
+                    isActive={num === page}>
+                    {num}
                   </PaginationLink>
                 </PaginationItem>
-              </>
-            )}
-            <PaginationItem>
-              <PaginationNext
-                size="default"
-                href="#"
-                onClick={() => handlePageChange(page + 1)}
-                aria-disabled={page === totalPages}
-                className={page === totalPages ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              ))}
+              {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
+                <>
+                  {getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+                  <PaginationItem>
+                    <PaginationLink
+                      size="default"
+                      href="#"
+                      onClick={() => handlePageChange(totalPages)}>
+                      {totalPages}
+                    </PaginationLink>
+                  </PaginationItem>
+                </>
+              )}
+              <PaginationItem>
+                <PaginationNext
+                  size="default"
+                  href="#"
+                  onClick={() => handlePageChange(page + 1)}
+                  aria-disabled={page === totalPages}
+                  className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </div>
   );

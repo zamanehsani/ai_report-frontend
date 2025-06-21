@@ -190,70 +190,74 @@ export default function Sites() {
       </div>
       <div className="flex justify-center py-2  mt-auto">
         {/* Dynamic Pagination */}
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                size="default"
-                href="#"
-                onClick={() => handlePageChange(page - 1)}
-                aria-disabled={page === 1}
-                className={page === 1 ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-            {getPageNumbers()[0] > 1 && (
-              <>
+        {sites.length > 9 && (
+          <>
+            <Pagination>
+              <PaginationContent>
                 <PaginationItem>
-                  <PaginationLink size="default" href="#" onClick={() => handlePageChange(1)}>
-                    1
-                  </PaginationLink>
-                </PaginationItem>
-                {getPageNumbers()[0] > 2 && (
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                )}
-              </>
-            )}
-            {getPageNumbers().map((num) => (
-              <PaginationItem key={num}>
-                <PaginationLink
-                  size="default"
-                  href="#"
-                  onClick={() => handlePageChange(num)}
-                  isActive={num === page}>
-                  {num}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
-              <>
-                {getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1 && (
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                )}
-                <PaginationItem>
-                  <PaginationLink
+                  <PaginationPrevious
                     size="default"
                     href="#"
-                    onClick={() => handlePageChange(totalPages)}>
-                    {totalPages}
-                  </PaginationLink>
+                    onClick={() => handlePageChange(page - 1)}
+                    aria-disabled={page === 1}
+                    className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                  />
                 </PaginationItem>
-              </>
-            )}
-            <PaginationItem>
-              <PaginationNext
-                size="default"
-                href="#"
-                onClick={() => handlePageChange(page + 1)}
-                aria-disabled={page === totalPages}
-                className={page === totalPages ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+                {getPageNumbers()[0] > 1 && (
+                  <>
+                    <PaginationItem>
+                      <PaginationLink size="default" href="#" onClick={() => handlePageChange(1)}>
+                        1
+                      </PaginationLink>
+                    </PaginationItem>
+                    {getPageNumbers()[0] > 2 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+                  </>
+                )}
+                {getPageNumbers().map((num) => (
+                  <PaginationItem key={num}>
+                    <PaginationLink
+                      size="default"
+                      href="#"
+                      onClick={() => handlePageChange(num)}
+                      isActive={num === page}>
+                      {num}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
+                  <>
+                    {getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1 && (
+                      <PaginationItem>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    )}
+                    <PaginationItem>
+                      <PaginationLink
+                        size="default"
+                        href="#"
+                        onClick={() => handlePageChange(totalPages)}>
+                        {totalPages}
+                      </PaginationLink>
+                    </PaginationItem>
+                  </>
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    size="default"
+                    href="#"
+                    onClick={() => handlePageChange(page + 1)}
+                    aria-disabled={page === totalPages}
+                    className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </>
+        )}
       </div>
     </div>
   );

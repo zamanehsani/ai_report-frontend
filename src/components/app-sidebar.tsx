@@ -1,16 +1,9 @@
 import * as React from "react";
 import {
-  IconCamera,
   IconChartBar,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
   IconFolder,
   IconHelp,
   IconInnerShadowTop,
-  IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
@@ -68,16 +61,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: "Users",
         url: "./admin",
-        icon: IconDashboard,
-      },
-      {
-        title: "Clients",
-        url: "./clients",
-        icon: IconUsers,
-      },
-      {
-        title: "Personnels",
-        url: "./personnels",
         icon: IconUsers,
       },
       {
@@ -87,6 +70,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
     ];
   }
+
+  // taken out ad deprecated...
+  // {
+  //   title: "Clients",
+  //   url: "./clients",
+  //   icon: IconUsers,
+  // },
+  // {
+  //   title: "Personnels",
+  //   url: "./personnels",
+  //   icon: IconUsers,
+  // },
 
   const navSecondary = [
     {

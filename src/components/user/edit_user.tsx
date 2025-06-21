@@ -19,7 +19,7 @@ import { useStore, type userType } from "@/store/use-store";
 import { toast } from "sonner";
 import { editUser } from "@/lib/user_admin_utils";
 
-export default function EditUser({ user }: { user: userType }) {
+export default function EditUser({ user, source = "default" }: { user: userType; source: string }) {
   const [first_name, setFirst_name] = useState(user.firstName);
   const [middle_name, setMiddle_name] = useState(user.middleName);
   const [last_name, setLast_name] = useState(user.lastName);
@@ -33,10 +33,11 @@ export default function EditUser({ user }: { user: userType }) {
   const [address, setAddress] = useState(user.address);
   const [error, setError] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
-
+  console.log("source: ", source);
   const base_url = import.meta.env.VITE_BASE_URL || "/";
   const token = useStore((state) => state.token);
   const updateUsers = useStore((state) => state.updateUsers);
+  const updateUser = useStore((state) => state.updateUser);
 
   // Handler for editing a site (for now, just a placeholder)
   const handleEditUser = (e: any) => {
@@ -58,8 +59,12 @@ export default function EditUser({ user }: { user: userType }) {
 
     editUser({ data: data, url, token })
       .then((res) => {
-        updateUsers(res.user);
-        console.log("res: ", res);
+        if (source === "profile") {
+          updateUser(res.user);
+        } else {
+          updateUsers(res.user);
+        }
+
         toast("Client Update", {
           description: res?.message,
           action: {
