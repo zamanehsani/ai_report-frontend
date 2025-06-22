@@ -15,6 +15,7 @@ export interface userType {
   secondary_phone?: string;
   secondary_email?: string;
   userType?: string;
+  note?: string;
 }
 
 export interface AuthState {

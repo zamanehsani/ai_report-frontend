@@ -8,13 +8,14 @@ import {
   DialogClose,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Edit } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore, type userType } from "@/store/use-store";
 import { toast } from "sonner";
 import { editUser } from "@/lib/user_admin_utils";
@@ -32,8 +33,9 @@ export default function EditUser({ user, source = "default" }: { user: userType;
   const [userType, setUserTyp] = useState(user.userType);
   const [address, setAddress] = useState(user.address);
   const [error, setError] = useState("");
+  const [note, setNote] = useState(user.note);
   const [openDialog, setOpenDialog] = useState(false);
-  console.log("source: ", source);
+
   const base_url = import.meta.env.VITE_BASE_URL || "/";
   const token = useStore((state) => state.token);
   const updateUsers = useStore((state) => state.updateUsers);
@@ -55,6 +57,7 @@ export default function EditUser({ user, source = "default" }: { user: userType;
       secondary_email,
       secondary_name,
       secondary_phone,
+      note,
     };
 
     editUser({ data: data, url, token })
@@ -198,6 +201,13 @@ export default function EditUser({ user, source = "default" }: { user: userType;
                 placeholder="123st downtown NY"
                 onChange={(e: any) => setAddress(e.target.value)}
                 type="text"
+              />
+            </div>
+            <div>
+              <Textarea
+                placeholder="Type your message here."
+                onChange={(e) => setNote(e.target.value)}
+                defaultValue={note}
               />
             </div>
             <div>
