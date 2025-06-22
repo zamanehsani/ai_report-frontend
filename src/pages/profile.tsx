@@ -2,7 +2,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import EditUser from "@/components/user/edit_user";
 import { useStore } from "@/store/use-store";
-import { use } from "react";
 
 export default function MyProfile() {
   // Example static user data

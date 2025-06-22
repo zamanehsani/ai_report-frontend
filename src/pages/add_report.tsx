@@ -11,14 +11,10 @@ import {
 
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Progress } from "@/components/ui/progress";
 
@@ -36,13 +32,12 @@ import { aiSummary, type inputProp } from "@/components/report/ai-summary";
 import { generateReportPDF } from "@/components/report/make-pdf";
 import { CreateReport } from "@/lib/report_utils";
 import { useEffect } from "react";
-import { listPersonnel } from "@/lib/personnel_utils";
 
 export default function AddReports() {
   const sites = siteStore((state) => state.sites);
   const user = useStore((state) => state.user);
-  const [personnel, setPersonnel] = useState({ id: "" });
-  const [dateNTime, setDateNTime] = useState(new Date());
+
+  const [dateNTime] = useState(new Date());
   const [selectedSite, setSelectedSite] = useState("");
   const [reportBody, setReportBody] = useState("");
   const [progress, setProgress] = useState(10);
@@ -52,24 +47,13 @@ export default function AddReports() {
   const [dialog, setDialog] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-
+  console.log(audioDesc, imageDesc);
   // New state for image file and preview
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const token = useStore((state) => state.token);
   const [reportFile, setReportFile] = useState<File | null>(null);
   const base_url = import.meta.env.VITE_BASE_URL;
-
-  // useEffect(() => {
-  //   listPersonnel(`${base_url}api/personnel/?email=${user.email}`)
-  //     .then((res) => {
-  //       setPersonnel(res.data.personnels[0]);
-  //       console.log("res of persno: ", res.data.personnels[0]);
-  //     })
-  //     .catch((err) => {
-  //       console.log("err getting personne;:", err);
-  //     });
-  // }, []);
 
   const handlePhotoChange = (event: any) => {
     event.preventDefault();
@@ -129,15 +113,6 @@ export default function AddReports() {
             console.log("pdf done!!...");
             setReportFile(res);
             setProgress(98);
-            // // To download the PDF file
-            // const url = URL.createObjectURL(res);
-            // const link = document.createElement("a");
-            // link.href = url;
-            // link.download = "report.pdf";
-            // document.body.appendChild(link);
-            // link.click();
-            // document.body.removeChild(link);
-            // URL.revokeObjectURL(url);
           }
         })
         .catch((err) => {

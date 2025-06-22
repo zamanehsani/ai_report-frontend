@@ -27,10 +27,9 @@ export default function Sites() {
   const token = useStore((state) => state.token);
   const sites = siteStore((state) => state.sites);
   const user = useStore((state) => state.user);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(8);
+  const [pageSize] = useState(8);
   const [totalPages, setTotalPages] = useState(1); // Add totalPages state
   const base_url = import.meta.env.VITE_BASE_URL || "/";
 
@@ -74,8 +73,8 @@ export default function Sites() {
         setTotalPages(Math.ceil(res.data.total / pageSize) || 1); // Set total pages from API
         setLoading(false);
       })
-      .catch((err) => {
-        setError("Failed to fetch sites.");
+      .catch(() => {
+        // setError("Failed to fetch sites." ,err);
         setLoading(false);
       });
   }, [page, pageSize]); // Add page and pageSize as dependencies
