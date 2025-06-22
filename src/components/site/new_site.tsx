@@ -33,9 +33,9 @@ import { listUser } from "@/lib/user_admin_utils";
 export default function NewSite() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [isActive, setIsActive] = useState(true);
+  const [isActive] = useState(true);
   const [location, setLocation] = useState("");
-  const [error, setError] = useState("");
+  const [error] = useState("");
   const [open, setOpen] = useState(false);
   const base_url = import.meta.env.VITE_BASE_URL || "/";
   const token = useStore((state) => state.token);

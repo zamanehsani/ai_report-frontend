@@ -1,4 +1,4 @@
-import { GoogleGenAI, createUserContent, createPartFromUri } from "@google/genai";
+import { GoogleGenAI, createUserContent } from "@google/genai";
 
 // Get API key from VITE .env
 const apiKey = import.meta.env.VITE_GEMINI_KEY;

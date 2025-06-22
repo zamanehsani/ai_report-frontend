@@ -16,7 +16,7 @@ interface DateTimePickerProps {
   setTime: (time: string) => void;
 }
 
-export function DateTimePicker({ date, setDate, time, setTime }: DateTimePickerProps) {
+export function DateTimePicker({ date, setDate, setTime }: DateTimePickerProps) {
   const [open, setOpen] = React.useState(false);
 
   return (

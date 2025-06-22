@@ -1,4 +1,3 @@
-import type { reportType } from "@/store/report-store";
 import axios from "axios";
 
 interface CreateReportProp {

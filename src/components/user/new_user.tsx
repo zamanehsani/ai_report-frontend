@@ -33,7 +33,7 @@ export default function NewUser() {
   const [contactPerson, setContactPerson] = useState<{ name: string }>({ name: "" });
   const [address, setAddress] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error] = useState("");
   const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
 

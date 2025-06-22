@@ -34,7 +34,7 @@ export default function UserTable() {
   const setUsers = useStore((state) => state.setUsers);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const updateUsers = useStore((state) => state.updateUsers);
   const users = useStore((state) => state.users);
